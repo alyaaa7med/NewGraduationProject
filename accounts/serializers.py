@@ -143,11 +143,11 @@ class PasswordResetRequestSerializer(serializers.Serializer):
         
         email = attrs.get('email')
 
-        if not User.objects.filter(email=email).exists():
-            raise serializers.ValidationError("User with that email does not exist.")
+        # if not User.objects.filter(email=email).exists():
+        #     raise serializers.ValidationError("User with that email does not exist.")
 
-        else :
-            send_generated_otp_to_email(email)            
+        # else :
+        send_generated_otp_to_email(email)            
 
         return super().validate(attrs)
     
