@@ -29,7 +29,6 @@ SECRET_KEY =os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['alyaaahmed.pythonanywhere.com','localhost','127.0.0.1']
-# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -81,35 +80,6 @@ SIMPLE_JWT = {
 
 
 
-DESCRIPTION = """Documentation of API endpoints of Sight Saver
-
-Handle Error Codes:
-```json
-    400: "Bad request.",
-    401: "Unauthorized.",
-    404: "Not found.",
-    405: "Method not allowed.",
-    500: "Internal server error.",
-    200: "OK.",
-    201: "Created.",
-    202: "Accepted.",
-```
-
-Example:
-```json
-    {
-        "status_code": 400,
-        "exception_class": "ValidationError",
-        "error_message": "Bad request."
-    }
-```
-"""
-SPECTACULAR_SETTINGS = {
-    "TITLE": "Sight Saver API",
-    "DESCRIPTION": DESCRIPTION,
-    "VERSION": "1.0.0",
-    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
-}
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -161,23 +131,23 @@ DATABASES = {
 }
 
 # Email configration for deployment
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
-# Email configration for development
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST='sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER='60972b6568b304'
-EMAIL_HOST_PASSWORD='df8d09b7f05117'
-EMAIL_PORT=2525
-DEFAULT_FROM_EMAIL = "alyaa@backend.com"
-DOMAIN ='localhost:8000' # domain for the front end ,but i put 8000 not 5173 
-SITE_NAME = "Depressed Backend "  # ^_^
-DOMAIN='localhost:8000'
+# # Email configration for development
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST='sandbox.smtp.mailtrap.io'
+# EMAIL_HOST_USER='60972b6568b304'
+# EMAIL_HOST_PASSWORD='df8d09b7f05117'
+# EMAIL_PORT=2525
+# DEFAULT_FROM_EMAIL = "alyaa@backend.com"
+# DOMAIN ='localhost:8000' # domain for the front end ,but i put 8000 not 5173 
+# SITE_NAME = "Depressed Backend "  # ^_^
+# DOMAIN='localhost:8000'
 
 
 
@@ -217,7 +187,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')  # will be used in production 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = 'media/'
 
