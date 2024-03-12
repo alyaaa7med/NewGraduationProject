@@ -101,14 +101,15 @@ class PatientSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(max_length=155, min_length=6)
+    email = serializers.EmailField(max_length=155,write_only=True, min_length=6)
     password=serializers.CharField(max_length=255, write_only=True)
     access_token=serializers.CharField(max_length=255, read_only=True)
     refresh_token=serializers.CharField(max_length=255, read_only=True)
+    profile_id = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'access_token', 'refresh_token']
+        fields = ['email', 'password', 'access_token', 'refresh_token','profile_id']
 
     
 
@@ -121,11 +122,27 @@ class LoginSerializer(serializers.ModelSerializer):
             if check_password(password, user.password):
                
                 tokens=user.tokens()  # generate access token and refresh 
+                # check if the patient or doctor to return the id in response
+                try:
+                    doctor = Doctor.objects.get(user=user)
+                    profileid = doctor.id
+
+                except Doctor.DoesNotExist:
+                    try :
+                        patient = Patient.objects.get(user=user)
+                        profileid = patient.id
+
+                    except Patient.DoesNotExist:
+                        return None 
+                except Doctor.DoesNotExist:
+                    return None 
                 return {
-                 'email':user.email,
+                 "profile_id":profileid,
                  "access_token":str(tokens.get('access')),
                  "refresh_token":str(tokens.get('refresh'))
                     }
+            
+
             else:
                 raise serializers.ValidationError("Invalid username or password.")
         else:
