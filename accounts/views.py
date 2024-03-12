@@ -35,12 +35,12 @@ class PasswordResetRequestView(GenericAPIView):
 
     def post(self, request):
         serializer=self.serializer_class(data=request.data, context={'request':request})
-        # try:
-        #     serializer.is_valid(raise_exception=True)
-        #     return Response({'message':'otp code sent successfully , go to verify it '}, status=status.HTTP_200_OK)
+        try:
+            serializer.is_valid(raise_exception=True)
+            return Response({'message':'otp code sent successfully , go to verify it '}, status=status.HTTP_200_OK)
 
-        # except ValidationError : 
-        return Response({'message':'user with that email does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        except ValidationError : 
+            return Response({'message':'user with that email does not exist'}, status=status.HTTP_400_BAD_REQUEST)
     
 
 class VerifyOTPRequestView(GenericAPIView):
