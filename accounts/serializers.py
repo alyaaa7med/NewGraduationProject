@@ -106,10 +106,11 @@ class LoginSerializer(serializers.ModelSerializer):
     access_token=serializers.CharField(max_length=255, read_only=True)
     refresh_token=serializers.CharField(max_length=255, read_only=True)
     profile_id = serializers.IntegerField(read_only=True)
+    user_type = serializers.CharField(max_length=30,read_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'access_token', 'refresh_token','profile_id']
+        fields = ['email', 'password', 'access_token', 'refresh_token','profile_id','user_type']
 
     
 
@@ -122,15 +123,17 @@ class LoginSerializer(serializers.ModelSerializer):
             if check_password(password, user.password):
                
                 tokens=user.tokens()  # generate access token and refresh 
-                # check if the patient or doctor to return the id in response
+                # check if the patient or doctor to return the id in response and its type
                 try:
                     doctor = Doctor.objects.get(user=user)
                     profileid = doctor.id
+                    usertype='doctor'
 
                 except Doctor.DoesNotExist:
                     try :
                         patient = Patient.objects.get(user=user)
                         profileid = patient.id
+                        usertype='patient'
 
                     except Patient.DoesNotExist:
                         return None 
@@ -138,6 +141,7 @@ class LoginSerializer(serializers.ModelSerializer):
                     return None 
                 return {
                  "profile_id":profileid,
+                 "user_type":usertype,
                  "access_token":str(tokens.get('access')),
                  "refresh_token":str(tokens.get('refresh'))
                     }
