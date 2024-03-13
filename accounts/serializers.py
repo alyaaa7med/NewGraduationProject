@@ -119,35 +119,32 @@ class LoginSerializer(serializers.ModelSerializer):
         password = attrs.get('password')
         
         if email and password:
-            user = User.objects.get(email=email)
-            if check_password(password, user.password):
-               
-                tokens=user.tokens()  # generate access token and refresh 
-                # check if the patient or doctor to return the id in response and its type
-                try:
-                    doctor = Doctor.objects.get(user=user)
-                    profileid = doctor.id
-                    usertype='doctor'
+            try :
+                user = User.objects.get(email=email)
+                if check_password(password, user.password):
+                    tokens=user.tokens()  # generate access token and refresh 
+                    # check if the patient or doctor to return the id in response and its type
+                    try:
+                        doctor = Doctor.objects.get(user=user)
+                        profileid = doctor.id
+                        usertype='doctor'
 
-                except Doctor.DoesNotExist:
-                    try :
-                        patient = Patient.objects.get(user=user)
-                        profileid = patient.id
-                        usertype='patient'
+                    except Doctor.DoesNotExist:
+                        try :
+                            patient = Patient.objects.get(user=user)
+                            profileid = patient.id
+                            usertype='patient'
 
-                    except Patient.DoesNotExist:
-                        return None 
-                except Doctor.DoesNotExist:
-                    return None 
-                return {
-                 "profile_id":profileid,
-                 "user_type":usertype,
-                 "access_token":str(tokens.get('access')),
-                 "refresh_token":str(tokens.get('refresh'))
+                        except Patient.DoesNotExist:
+                            raise serializers.ValidationError("Invalid username or password.")
+                 
+                    return {
+                    "profile_id":profileid,
+                    "user_type":usertype,
+                    "access_token":str(tokens.get('access')),
+                    "refresh_token":str(tokens.get('refresh'))
                     }
-            
-
-            else:
+            except :
                 raise serializers.ValidationError("Invalid username or password.")
         else:
             raise serializers.ValidationError("Both username and password are required.")
