@@ -53,7 +53,7 @@ class otpcode(models.Model):
     otp_expires_at = models.DateTimeField(blank= True , null = True) # why ? 
    
     def __str__(self) :
-        return self.otp
+        return self.user.email
     
 
 # not all relations have been added ^_^    

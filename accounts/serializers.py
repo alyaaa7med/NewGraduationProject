@@ -3,11 +3,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models import Doctor , Patient , otpcode
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth import authenticate
-from rest_framework.exceptions import AuthenticationFailed
 from .utils import send_generated_otp_to_email
 import base64
-import binascii
 from django.contrib.auth.hashers import check_password
 
 
@@ -117,10 +114,12 @@ class LoginSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
-        
-        if email and password:
+
+        if email and password: # no need for this check 
             try :
+                # check if the user with this email exists
                 user = User.objects.get(email=email)
+
                 if check_password(password, user.password):
                     tokens=user.tokens()  # generate access token and refresh 
                     # check if the patient or doctor to return the id in response and its type
@@ -136,70 +135,77 @@ class LoginSerializer(serializers.ModelSerializer):
                             usertype='patient'
 
                         except Patient.DoesNotExist:
-                            raise serializers.ValidationError("Invalid username or password.")
-                 
+                            # surly it is a guest
+                            raise serializers.ValidationError({"error_type": "not user","message":"Invalid Email or password."})
+                    # validate method should return fields of serializer 
                     return {
                     "profile_id":profileid,
                     "user_type":usertype,
                     "access_token":str(tokens.get('access')),
                     "refresh_token":str(tokens.get('refresh'))
                     }
+                else :
+                    # password is wrong 
+                    raise serializers.ValidationError({"error_type": "not user", "message": "Invalid email or password."})
+            # user with this email not found 
             except :
-                raise serializers.ValidationError("Invalid username or password.")
-        else:
-            raise serializers.ValidationError("Both username and password are required.")
-       
+                raise serializers.ValidationError({"error_type": "not user", "message": "Invalid email or password."})
+        
 
 class PasswordResetRequestSerializer(serializers.Serializer):
 
-    email = serializers.EmailField(max_length=255)
+    email = serializers.EmailField(max_length=255,write_only=True)
+    user_id =serializers.CharField(max_length=15,read_only=True)
 
     class Meta:
-        fields = ['email']
+        Model = User
+        fields = ['email','user_id']
 
     def validate(self, attrs):
         
         email = attrs.get('email')
+        # can be try or if 
+        try :
+            user = User.objects.get(email=email)
+            # user_id_str = str(user.id)  # Convert user ID to string
+            # user_id_bytes = user_id_str.encode('utf-8')  # Convert string to bytes using UTF-8 encoding
+            # uidb64 = base64.b64encode(user_id_bytes).decode('utf-8')  # Encode the user ID to bytes
+            send_generated_otp_to_email(email) 
+            return {'user_id': user.id}
+            # validated attributes should be return or it will raises error  i return data no need to the second line          
+            # return super().validate(attrs)
 
-        if not User.objects.filter(email=email).exists():
-            raise serializers.ValidationError("User with that email does not exist.")
+        except :
+            # email does not exist 
+            raise serializers.ValidationError({"error_type": "email not found", "message": "No User with this email"})
 
-        else :
-            send_generated_otp_to_email(email)            
 
-        return super().validate(attrs)
     
-     
 class VerifyOTPRequestSerializer(serializers.Serializer):
 
-    OTPcode = serializers.CharField(max_length = 10)
+    OTPcode = serializers.CharField(max_length = 6,write_only=True)
 
     class Meta:
         model = otpcode
-        fields = ['OTPcode']
+        fields = ['OTPcode'] 
 
 
 class SetConfirmNewPasswordSerializer(serializers.Serializer):
 
     password = serializers.CharField(max_length=200)
     confirm_password = serializers.CharField(max_length=200, write_only=True)
-    uidb64 = serializers.CharField(min_length=1, write_only=True)
+    user_id = serializers.CharField(min_length=1, write_only=True)
 
     class Meta:
-        fields = ['password', 'confirm_password', 'uidb64']
+        fields = ['password', 'confirm_password', 'user_id']
 
     def validate(self, attrs):
-        uidb64 = attrs.get('uidb64')
+        user_id = attrs.get('user_id')
         password = attrs.get('password')
         confirm_password = attrs.get('confirm_password')
 
         try:
-            try :
-                # if it fail while decoding 
-                user_id = base64.urlsafe_b64decode(uidb64).decode('utf-8')
-                user = User.objects.get(id=user_id)
-            except :
-                raise serializers.ValidationError({"error_type": "invalid_request", "message": "UnAuthenticated User."})
+            user = User.objects.get(id=user_id)
 
             if password != confirm_password:
                 raise serializers.ValidationError({"error_type": "password_mismatch", "message": "Passwords do not match."})
@@ -207,17 +213,20 @@ class SetConfirmNewPasswordSerializer(serializers.Serializer):
             else :
                 user.set_password(password)
                 user.save()
-                return user
+                return{
+                    # "password":password => will return plain text
+                    "password":user.password
+                }
 
         except User.DoesNotExist :
-            raise serializers.ValidationError({"error_type": "invalid_request", "message": "UnAuthenticated User."})
+            raise serializers.ValidationError({"error_type": "invalid_request", "message": "User is not found."})
         
 
 class ResendNewOTPSerializer(serializers.Serializer):
-    uidb64 = serializers.CharField(min_length=1, write_only=True)
+    user_id = serializers.CharField(min_length=1, write_only=True)
 
     class Meta:
-        fields = ['uidb64']
+        fields = ['user_id']
 
 
 
