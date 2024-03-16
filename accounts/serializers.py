@@ -126,7 +126,7 @@ class LoginSerializer(serializers.ModelSerializer):
                     try:
                         doctor = Doctor.objects.get(user=user)
                         profileid = doctor.id
-                        usertype='doctor'
+                        usertype='doctor'  # user.role
 
                     except Doctor.DoesNotExist:
                         try :
@@ -178,7 +178,6 @@ class PasswordResetRequestSerializer(serializers.Serializer):
         except :
             # email does not exist 
             raise serializers.ValidationError({"error_type": "email not found", "message": "No User with this email"})
-
 
     
 class VerifyOTPRequestSerializer(serializers.Serializer):

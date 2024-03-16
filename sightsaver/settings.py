@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     # Internal app
     'accounts.apps.AccountsConfig',
+    'reservation.apps.ReservationConfig',
 ]
 
 MIDDLEWARE = [

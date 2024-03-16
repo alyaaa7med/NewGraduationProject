@@ -10,12 +10,14 @@ import base64
 from .utils import send_generated_otp_to_email
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
-
+from .pagination import Pagination
 
 class DoctorView(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
     parser_classes = [MultiPartParser,FormParser]
+    pagination_class = Pagination
+
 
 class PatientView(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
