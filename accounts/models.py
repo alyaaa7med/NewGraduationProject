@@ -67,7 +67,7 @@ class Doctor(models.Model):
     gender= models.CharField(max_length=7)
     image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/", null=True, default="accounts/images/carton.png")
 
-    REQUIRED_FIELDS= ["phone","syndicateNo","university","specialization"]  # null = False + blank = False 
+    REQUIRED_FIELDS= ["phone","syndicateNo","university","specialization","image"]  # null = False + blank = False 
 
 
 
@@ -76,6 +76,8 @@ class Patient(models.Model):
     phone= models.CharField(max_length=15)
     birthdate = models.DateField()
     gender= models.CharField(max_length=7,default='unknown')
+    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/", null=True, default="accounts/images/carton.png")
+
 
     REQUIRED_FIELDS= ["phone"]  # null = False + blank = False 
 

@@ -22,12 +22,15 @@ class DoctorView(viewsets.ModelViewSet):
 class PatientView(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
+    parser_classes = [MultiPartParser,FormParser]
+
     
 class LoginUserView(GenericAPIView):
 
     serializer_class=LoginSerializer
 
     def post(self, request):
+        # print(request.user)  answer from chatgpt will work on postman 
         email = request.data.get('email')
         password = request.data.get('password')
 

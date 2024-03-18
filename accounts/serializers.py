@@ -76,7 +76,7 @@ class PatientSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=True)
     class Meta : 
         model = Patient
-        fields =['id','user','confirm_password','gender','birthdate']
+        fields =['id','user','confirm_password','gender','birthdate','image']
 
     
     def validate(self, data):
