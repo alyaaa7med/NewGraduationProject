@@ -59,13 +59,13 @@ class otpcode(models.Model):
 # not all relations have been added ^_^    
 class Doctor(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    phone= models.CharField(max_length=15)
-    syndicateNo = models.CharField(max_length=15)
+    phone= models.CharField(max_length=15,unique=True)
+    syndicateNo = models.CharField(max_length=15,unique=True)
     university = models.CharField(max_length=30)
     specialization = models.CharField(max_length=255)
     work_experience= models.CharField(max_length=255)
-    gender= models.CharField(max_length=7)
-    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/", null=True, default="accounts/images/carton.png")
+    gender= models.CharField(max_length=7,default='unknown')
+    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/") # ,default="accounts/images/carton.png" = > i had to add this for the first time only 
 
     REQUIRED_FIELDS= ["phone","syndicateNo","university","specialization","image"]  # null = False + blank = False 
 
@@ -73,12 +73,12 @@ class Doctor(models.Model):
 
 class Patient(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
-    phone= models.CharField(max_length=15)
+    phone= models.CharField(max_length=15,unique=True)
     birthdate = models.DateField()
     gender= models.CharField(max_length=7,default='unknown')
-    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/", null=True, default="accounts/images/carton.png")
+    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")# ,default="accounts/images/carton.png"
 
 
-    REQUIRED_FIELDS= ["phone"]  # null = False + blank = False 
+    REQUIRED_FIELDS= ["phone","image"]  # null = False + blank = False 
 
 
