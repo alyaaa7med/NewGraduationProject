@@ -68,7 +68,7 @@ class DoctorSerializer(serializers.ModelSerializer):
         user = User.objects.create(**user_data, role='doctor') # Here, a new User instance is created using the extracted user data (user_data). Additionally, the role attribute is set to 'doctor', indicating that this user instance represents a doctor.
         doctor = Doctor.objects.create(user=user,**validated_data)  # validated data does not have user 
         return doctor
-    
+        
     
 class PatientSerializer(serializers.ModelSerializer):
  

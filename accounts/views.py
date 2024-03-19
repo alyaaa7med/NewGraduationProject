@@ -6,11 +6,11 @@ from rest_framework.response import Response
 from django.utils import timezone 
 from rest_framework.generics import GenericAPIView
 from rest_framework import status
-import base64
 from .utils import send_generated_otp_to_email
 from rest_framework.exceptions import ValidationError
-from django.shortcuts import get_object_or_404
 from .pagination import Pagination
+
+import base64
 
 class DoctorView(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
@@ -90,11 +90,7 @@ class VerifyOTPRequestView(GenericAPIView):
             # otp is found  , so check expiration 
             if user_pass_obj.otp_expires_at > timezone.now():
                 user_obj = user_pass_obj.user
-                if user_obj:
-                    user_id_str = str(user_obj.id)  # Convert user ID to string
-                    uidb64 = base64.b64encode(user_id_str.encode())  # Encode the user ID to bytes
-            
-                    return Response({'user_id': uidb64,  
+                return Response({'user_id': user_obj.id,  
                          'message': 'user verified successfully, so reset your password'
                            }, status=status.HTTP_200_OK)
             
@@ -121,7 +117,7 @@ class SetConfirmNewPasswordView(GenericAPIView):
         try:
             serializer= self.serializer_class(data=request.data, context={'request': request})
             serializer.is_valid(raise_exception=True)
-            # return the new password with a message 
+            # return the new hashed  password with a message 
             return Response({'data': serializer.data,
                              'message':'password resetted successfully'}, status=status.HTTP_200_OK)
 
@@ -139,8 +135,6 @@ class SetConfirmNewPasswordView(GenericAPIView):
 
 
 class ResendNewOTP(GenericAPIView):
-
-# here the user should make a send request before resend 
     
     serializer_class=ResendNewOTPSerializer
 
@@ -154,7 +148,7 @@ class ResendNewOTP(GenericAPIView):
             user = User.objects.get(id=user_id)
 
         except : 
-            return Response({'message': 'Use not Found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'message': 'User not Found'}, status=status.HTTP_404_NOT_FOUND)
 
         email = user.email 
  
