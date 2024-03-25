@@ -47,6 +47,15 @@ class User(AbstractBaseUser,PermissionsMixin) :
    
 
 
+class otpcode(models.Model): 
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
+    otp=models.CharField(max_length=6 , default = secrets.token_hex(3)[:5])
+    otp_created_at = models.DateTimeField(auto_now_add = True )
+    otp_expires_at = models.DateTimeField(blank= True , null = True) # why ? 
+   
+    def __str__(self) :
+        return self.user.email
+    
 class Doctor(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     phone= models.CharField(max_length=15,unique=True)
@@ -59,8 +68,6 @@ class Doctor(models.Model):
 
     REQUIRED_FIELDS= ["phone","syndicateNo","university","specialization","image"]  # null = False + blank = False 
 
-
-
 class Patient(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     phone= models.CharField(max_length=15,unique=True)
@@ -72,12 +79,3 @@ class Patient(models.Model):
     REQUIRED_FIELDS= ["phone","image"]  # null = False + blank = False 
 
 
-class otpcode(models.Model): 
-    user = models.OneToOneField(User, on_delete = models.CASCADE)
-    otp=models.CharField(max_length=6 , default = secrets.token_hex(3)[:5])
-    otp_created_at = models.DateTimeField(auto_now_add = True )
-    otp_expires_at = models.DateTimeField(blank= True , null = True) # why ? 
-   
-    def __str__(self) :
-        return self.user.email
-    
