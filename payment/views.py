@@ -94,11 +94,11 @@ def WebhookView(request):
 
   except ValueError as e:
       # Invalid payload
-    return HttpResponse(status=400)
+    return HttpResponse(status=200)
   
   except stripe.error.SignatureVerificationError as e:
       # Invalid signature
-    return HttpResponse(status=400)
+    return HttpResponse(status=200)
   
   if event['type'] == 'checkout.session.completed':
     session = event['data']['object']
