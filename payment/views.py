@@ -59,7 +59,8 @@ class CreateCheckoutSessionView(APIView):
             return Response({"url": checkout_stripe_session.url})
 
         except Exception as e:
-            return Response({'message':'something went wrong while creating stripe session'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # return Response({'message':'something went wrong while creating stripe session'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error':e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
