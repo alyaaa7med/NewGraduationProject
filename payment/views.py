@@ -108,7 +108,7 @@ def WebhookView(request):
     if session.mode == 'payment' and session.payment_status == 'paid':
        return HttpResponse(status=200)
     else :
-       return HttpResponse(status=400)
+       return HttpResponse(status=200)
   
   else:
     print('Unhandled event type {}'.format(event['type']))
