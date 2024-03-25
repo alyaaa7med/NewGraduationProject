@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # Internal app
     'accounts.apps.AccountsConfig',
     'payment.apps.PaymentConfig',
+    'reservations.apps.ReservationsConfig',
 ]
 
 MIDDLEWARE = [
