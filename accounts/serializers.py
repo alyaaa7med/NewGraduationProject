@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import check_password
 User = get_user_model()
 
 
-class CreateUserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
@@ -44,7 +44,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     # to handle the user data 
 
-    user= CreateUserSerializer() 
+    user= UserSerializer() 
     confirm_password = serializers.CharField(write_only=True, required=True)
     class Meta : 
         model = Doctor   
@@ -56,7 +56,9 @@ class DoctorSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("The passwords do not match.")
         return data
     
-    # during deserialization 
+    # during deserialization                                         ______
+    #  create method  will be called automatically when you make a  | POST | request to create a new Doctor object through the associated ModelViewSet
+                                                                  # |______|
     def create(self, validated_data): # validated data = user + doctor 
         user_data = validated_data.pop('user') # This line extracts the nested user data from the validated data dictionary. Since user is a nested serializer field, it's removed from validated_data and stored separately in user_data.
         password = user_data.get('password')
@@ -67,12 +69,20 @@ class DoctorSerializer(serializers.ModelSerializer):
 
         user = User.objects.create(**user_data, role='doctor') # Here, a new User instance is created using the extracted user data (user_data). Additionally, the role attribute is set to 'doctor', indicating that this user instance represents a doctor.
         doctor = Doctor.objects.create(user=user,**validated_data)  # validated data does not have user 
-        return doctor
+        doctor.save()
+        return doctor  # why not return user ? i tried it but i get an error
         
-    
+    # def update(self , validated_data):
+    #     doctor_pk = self.context.get('doctor_pk')
+
+        
+    def delete(self):
+        doctor_pk = self.context.get('doctor_pk')
+        Doctor.objects.filter(id=doctor_pk).delete()
+
 class PatientSerializer(serializers.ModelSerializer):
  
-    user= CreateUserSerializer() 
+    user= UserSerializer() 
     confirm_password = serializers.CharField(write_only=True, required=True)
     class Meta : 
         model = Patient
@@ -94,7 +104,15 @@ class PatientSerializer(serializers.ModelSerializer):
         
         user = User.objects.create(**user_data, role='patient')
         patient = Patient.objects.create(user=user,**validated_data) 
+        patient.save()
         return patient
+    
+    # def update(self,validated_data):
+    #     pass
+    
+    def delete(self):
+        patient_pk = self.context.get('patient')
+        Patient.objects.filter(id=patient_pk).delete()
 
 
 class LoginSerializer(serializers.ModelSerializer):

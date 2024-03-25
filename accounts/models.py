@@ -46,17 +46,7 @@ class User(AbstractBaseUser,PermissionsMixin) :
         }
    
 
-class otpcode(models.Model): 
-    user = models.OneToOneField(User, on_delete = models.CASCADE)
-    otp=models.CharField(max_length=6 , default = secrets.token_hex(3)[:5])
-    otp_created_at = models.DateTimeField(auto_now_add = True )
-    otp_expires_at = models.DateTimeField(blank= True , null = True) # why ? 
-   
-    def __str__(self) :
-        return self.user.email
-    
 
-# not all relations have been added ^_^    
 class Doctor(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     phone= models.CharField(max_length=15,unique=True)
@@ -65,7 +55,7 @@ class Doctor(models.Model):
     specialization = models.CharField(max_length=255)
     work_experience= models.CharField(max_length=255)
     gender= models.CharField(max_length=7,default='unknown')
-    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/") # ,default="accounts/images/carton.png" = > i had to add this for the first time only 
+    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/") # ,default="accounts/images/carton.png"
 
     REQUIRED_FIELDS= ["phone","syndicateNo","university","specialization","image"]  # null = False + blank = False 
 
@@ -76,9 +66,18 @@ class Patient(models.Model):
     phone= models.CharField(max_length=15,unique=True)
     birthdate = models.DateField()
     gender= models.CharField(max_length=7,default='unknown')
-    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")# ,default="accounts/images/carton.png"
+    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")# no need ,default="accounts/images/carton.png"
 
 
     REQUIRED_FIELDS= ["phone","image"]  # null = False + blank = False 
 
 
+class otpcode(models.Model): 
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
+    otp=models.CharField(max_length=6 , default = secrets.token_hex(3)[:5])
+    otp_created_at = models.DateTimeField(auto_now_add = True )
+    otp_expires_at = models.DateTimeField(blank= True , null = True) # why ? 
+   
+    def __str__(self) :
+        return self.user.email
+    

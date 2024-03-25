@@ -18,11 +18,20 @@ class DoctorView(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser,FormParser]
     pagination_class = Pagination
 
+    def get_serializer_context(self):
+
+        return {'doctor_id':self.kwargs['pk']}
+
 
 class PatientView(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
     parser_classes = [MultiPartParser,FormParser]
+
+    def get_serializer_context(self):
+
+        return {'patient_id':self.kwargs['pk']}
+
 
     
 class LoginUserView(GenericAPIView):
@@ -131,7 +140,6 @@ class SetConfirmNewPasswordView(GenericAPIView):
             
             else:
                 return Response({'message': error_message}, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class ResendNewOTP(GenericAPIView):
