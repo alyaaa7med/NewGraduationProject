@@ -12,7 +12,8 @@ import stripe
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-Domain='http://127.0.0.1:8000/'
+LocalDomain='http://127.0.0.1:8000/'
+PublicDomain='https://sightsaver.onrender.com/'
 
 class SessionView(viewsets.ModelViewSet):
     queryset = Session.objects.all()
@@ -50,8 +51,8 @@ class CreateCheckoutSessionView(APIView):
                     'quantity': 1,
                 },],
                 mode='payment', # as you pay one time not subscription
-                success_url= Domain+'payment/Success',
-                cancel_url=  Domain+'payment/Cancel',
+                success_url= PublicDomain+'payment/Success',
+                cancel_url=  PublicDomain+'payment/Cancel',
                
             )
 
