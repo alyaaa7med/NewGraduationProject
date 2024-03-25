@@ -157,7 +157,7 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
-STRIPE_WEBHOOK_KEY = os.getenv('STRIPE_WEBHOOK_KEY')
+STRIPE_WEBHOOK_KEY = os.getenv('STRIPE_WEBHOOK_KEY') # local key is different from the global
                      
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
