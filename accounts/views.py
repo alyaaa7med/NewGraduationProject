@@ -30,7 +30,7 @@ class PatientView(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
 
-        return {'patient_pk':self.kwargs.get['pk']}
+        return {'patient_pk':self.kwargs.get('pk')}
 
 
     

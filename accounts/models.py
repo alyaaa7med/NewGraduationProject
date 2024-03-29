@@ -68,6 +68,12 @@ class Doctor(models.Model):
 
     REQUIRED_FIELDS= ["phone","syndicateNo","university","specialization","image"]  # null = False + blank = False 
 
+
+    # def get_profile_picture(self):
+        
+    #     return self.picture.url
+    
+
     def __str__(self) :
         return self.user.email
     

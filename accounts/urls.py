@@ -12,7 +12,6 @@ router.register(r'patients',PatientView)
 doctors_router = routers.NestedDefaultRouter(router , 'doctors',lookup ='doctor_pk') #parent : doctors (must be the same name of the default router) ,lookup : we have doctor_pk 
 
 
-
 urlpatterns = [
    
     path('', include(router.urls)),
