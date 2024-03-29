@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import Doctor 
+from accounts.models import Doctor  , Patient
 
 
 class Session(models.Model):
@@ -18,3 +18,5 @@ class Session(models.Model):
     type = models.CharField(max_length = 10, choices = Session_CHOICES )
     price = models.DecimalField(max_digits=10, decimal_places=2 , null = True) # add null for previous rows in db
     state = models.CharField(max_length = 10, choices = State_CHOICES , default = 'free' )
+    doctor = models.ForeignKey(Doctor,on_delete = models.CASCADE)
+    patient = models.ForeignKey(Patient , on_delete = models.SET_NULL , null =True )

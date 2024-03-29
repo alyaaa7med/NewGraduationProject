@@ -68,6 +68,9 @@ class Doctor(models.Model):
 
     REQUIRED_FIELDS= ["phone","syndicateNo","university","specialization","image"]  # null = False + blank = False 
 
+    def __str__(self) :
+        return self.user.email
+    
 class Patient(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     phone= models.CharField(max_length=15,unique=True)

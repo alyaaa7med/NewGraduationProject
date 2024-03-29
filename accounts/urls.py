@@ -2,9 +2,15 @@
 from django.urls import path,include
 from rest_framework.routers import DefaultRouter
 from .views import DoctorView , PatientView  , LoginUserView ,ResendNewOTP, PasswordResetRequestView ,VerifyOTPRequestView ,SetConfirmNewPasswordView 
+from rest_framework_nested import routers
+
+
 router = DefaultRouter()
-router.register(r'Doctors', DoctorView)
-router.register(r'Patients',PatientView)
+router.register(r'doctors', DoctorView)
+router.register(r'patients',PatientView)
+
+doctors_router = routers.NestedDefaultRouter(router , 'doctors',lookup ='doctor_pk') #parent : doctors (must be the same name of the default router) ,lookup : we have doctor_pk 
+
 
 
 urlpatterns = [

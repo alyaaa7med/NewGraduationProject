@@ -1,8 +1,6 @@
-from rest_framework import viewsets  
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Session
-from .serializers import SessionSerializer
 from django.conf import settings
 from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
@@ -15,9 +13,6 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 LocalDomain='http://127.0.0.1:8000/'
 PublicDomain='https://sightsaver.onrender.com/'
 
-class SessionView(viewsets.ModelViewSet):
-    queryset = Session.objects.all()
-    serializer_class =SessionSerializer
 
 class Successview(APIView):
     

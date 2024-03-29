@@ -13,14 +13,14 @@ from .pagination import Pagination
 import base64
 
 class DoctorView(viewsets.ModelViewSet):
-    queryset = Doctor.objects.all()
+    queryset = Doctor.objects.all().order_by('pk')
     serializer_class = DoctorSerializer
     parser_classes = [MultiPartParser,FormParser]
     pagination_class = Pagination
 
     def get_serializer_context(self):
 
-        return {'doctor_id':self.kwargs['pk']}
+        return {'doctor_pk':self.kwargs.get('doctor_pk')}
 
 
 class PatientView(viewsets.ModelViewSet):
@@ -30,7 +30,7 @@ class PatientView(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
 
-        return {'patient_id':self.kwargs['pk']}
+        return {'patient_pk':self.kwargs.get['pk']}
 
 
     
