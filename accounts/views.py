@@ -17,23 +17,14 @@ class DoctorView(viewsets.ModelViewSet):
     serializer_class = DoctorSerializer
     parser_classes = [MultiPartParser,FormParser]
     pagination_class = Pagination
-
-    def get_serializer_context(self):
-
-        return {'doctor_pk':self.kwargs.get('doctor_pk')}
-
-
+    
 class PatientView(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
     parser_classes = [MultiPartParser,FormParser]
+   
 
-    def get_serializer_context(self):
-
-        return {'patient_pk':self.kwargs.get('pk')}
-
-
-    
+# i should change GenericAPIView to APIView 
 class LoginUserView(GenericAPIView):
 
     serializer_class=LoginSerializer
@@ -50,7 +41,7 @@ class LoginUserView(GenericAPIView):
         serializer= self.serializer_class(data=request.data, context={'request': request})
         try:
             serializer.is_valid(raise_exception=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK) # should be serializer.validated_data , but i get an error for representing the access_token  , refresh_token 
 
         except ValidationError as error:
             error_details = error.detail
@@ -72,8 +63,11 @@ class PasswordResetRequestView(GenericAPIView):
         serializer=self.serializer_class(data=request.data, context={'request':request})
         try:
             serializer.is_valid(raise_exception=True)
+                
+            # serializer.save()  # Calls the serializer's create method as it is post method and no need for this line here 
+
             return Response({
-                'data': serializer.data,
+                'data': serializer.data, # take the output from the validate 
                 'message': 'User Verified and otp code sent successfully, go to verify it'}, status=status.HTTP_200_OK)
 
         except ValidationError as error:
@@ -108,7 +102,6 @@ class VerifyOTPRequestView(GenericAPIView):
         except otpcode.DoesNotExist:
            return Response({'message': 'Invalid OTP code'}, status=status.HTTP_400_BAD_REQUEST)
   
-
 class SetConfirmNewPasswordView(GenericAPIView):
 
     serializer_class=SetConfirmNewPasswordSerializer
@@ -140,7 +133,6 @@ class SetConfirmNewPasswordView(GenericAPIView):
             
             else:
                 return Response({'message': error_message}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class ResendNewOTP(GenericAPIView):
     

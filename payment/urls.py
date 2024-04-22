@@ -7,9 +7,9 @@ from .views import CreateCheckoutSessionView , WebhookView , Successview  , Canc
 
 
 urlpatterns = [
-       path('CheckoutSessions/<int:pk>/', CreateCheckoutSessionView.as_view()),
+       path('checkout-session', CreateCheckoutSessionView.as_view()),
        path('WebhookView', WebhookView),
-       path('Success',Successview.as_view()),
-       path('Cancel',Cancelview.as_view())
+       path('success',Successview.as_view()), #/<int:id>
+       path('cancel',Cancelview.as_view())
 
 ]

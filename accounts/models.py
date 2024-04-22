@@ -37,7 +37,8 @@ class User(AbstractBaseUser,PermissionsMixin) :
 
     def get_full_name(self):
         pass 
-
+    
+    # it is repeated in the login serializer 
     def tokens(self):    
         refresh = RefreshToken.for_user(self)
         return {

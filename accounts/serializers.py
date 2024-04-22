@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import make_password
 from .utils import send_generated_otp_to_email
 import base64
 from django.contrib.auth.hashers import check_password
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 
@@ -38,8 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.delete()
         return user
-
-    
+  
 class DoctorSerializer(serializers.ModelSerializer):
 
     # to handle the user data 
@@ -74,12 +74,7 @@ class DoctorSerializer(serializers.ModelSerializer):
         
     # def update(self , validated_data):
     #     doctor_pk = self.context.get('doctor_pk')
-
-        
-    def delete(self):
-        doctor_pk = self.context.get('doctor_pk')
-        Doctor.objects.filter(id=doctor_pk).delete()
-
+     
 class PatientSerializer(serializers.ModelSerializer):
  
     user= UserSerializer() 
@@ -109,27 +104,17 @@ class PatientSerializer(serializers.ModelSerializer):
     
     # def update(self,validated_data):
     #     pass
-    
-    def delete(self):
-        patient_pk = self.context.get('patient')
-        Patient.objects.filter(id=patient_pk).delete()
+  
 
-
-class LoginSerializer(serializers.ModelSerializer):
+class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=155,write_only=True, min_length=6)
     password=serializers.CharField(max_length=255, write_only=True)
     access_token=serializers.CharField(max_length=255, read_only=True)
     refresh_token=serializers.CharField(max_length=255, read_only=True)
     profile_id = serializers.IntegerField(read_only=True)
-    user_type = serializers.CharField(max_length=30,read_only=True)
+    user_type = serializers.CharField(max_length=30,read_only=True)    
 
-    class Meta:
-        model = User
-        fields = ['email', 'password', 'access_token', 'refresh_token','profile_id','user_type']
-
-    
-
-    def validate(self, attrs):
+    def validate(self, attrs):# if i return attr it has no relation with the serializer data (read_only or write_only )
         email = attrs.get('email')
         password = attrs.get('password')
 
@@ -139,7 +124,11 @@ class LoginSerializer(serializers.ModelSerializer):
                 user = User.objects.get(email=email)
 
                 if check_password(password, user.password):
-                    tokens=user.tokens()  # generate access token and refresh 
+                    # tokens=user.tokens()  # generate access token and refresh 
+                    refresh_token = RefreshToken.for_user(user)
+                    access_token = str(refresh_token.access_token)
+
+
                     # check if the patient or doctor to return the id in response and its type
                     try:
                         doctor = Doctor.objects.get(user=user)
@@ -155,12 +144,19 @@ class LoginSerializer(serializers.ModelSerializer):
                         except Patient.DoesNotExist:
                             # surly it is a guest
                             raise serializers.ValidationError({"error_type": "not user","message":"Invalid Email or password."})
-                    # validate method should return fields of serializer 
-                    return {
+                         
+                    # attrs['access_token'] = access_token
+                    # attrs['refresh_token'] = str(refresh_token)
+                    # attrs['profile_id'] = profileid
+                    # attrs['user_type'] = usertype
+                    # return attrs
+                    
+                    # it is used by the serializer.validated_data
+                    return  {
                     "profile_id":profileid,
                     "user_type":usertype,
-                    "access_token":str(tokens.get('access')),
-                    "refresh_token":str(tokens.get('refresh'))
+                    "access_token":access_token, # str(tokens.get('access')),
+                    "refresh_token":refresh_token # str(tokens.get('refresh'))
                     }
                 else :
                     # password is wrong 
@@ -175,9 +171,10 @@ class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255,write_only=True)
     user_id =serializers.CharField(max_length=15,read_only=True)
 
-    class Meta:
-        Model = User
-        fields = ['email','user_id']
+    #     no need 
+    #     class Meta:
+    #     Model = User
+    #     fields = ['email','user_id']
 
     def validate(self, attrs):
         
@@ -201,10 +198,11 @@ class PasswordResetRequestSerializer(serializers.Serializer):
 class VerifyOTPRequestSerializer(serializers.Serializer):
 
     OTPcode = serializers.CharField(max_length = 6,write_only=True)
-
-    class Meta:
-        model = otpcode
-        fields = ['OTPcode'] 
+    
+    # no need
+    # class Meta:
+    #     model = otpcode
+    #     fields = ['OTPcode'] 
 
 
 class SetConfirmNewPasswordSerializer(serializers.Serializer):
@@ -212,9 +210,10 @@ class SetConfirmNewPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=200)
     confirm_password = serializers.CharField(max_length=200, write_only=True)
     user_id = serializers.CharField(min_length=1, write_only=True)
-
-    class Meta:
-        fields = ['password', 'confirm_password', 'user_id']
+    
+    # no need
+    # class Meta:
+    #     fields = ['password', 'confirm_password', 'user_id']
 
     def validate(self, attrs):
         user_id = attrs.get('user_id')
@@ -223,27 +222,27 @@ class SetConfirmNewPasswordSerializer(serializers.Serializer):
 
         try:
             user = User.objects.get(id=user_id)
-
-            if password != confirm_password:
-                raise serializers.ValidationError({"error_type": "password_mismatch", "message": "Passwords do not match."})
+        except User.DoesNotExist :
+            raise serializers.ValidationError({"error_type": "invalid_request", "message": "User is not found."})
+        
+        if password != confirm_password:
+            raise serializers.ValidationError({"error_type": "password_mismatch", "message": "Passwords do not match."})
             
-            else :
-                user.set_password(password)
-                user.save()
-                return{
+        else :
+            user.set_password(password)
+            user.save()
+            return{
                     # "password":password => will return plain text
                     "password":user.password
                 }
 
-        except User.DoesNotExist :
-            raise serializers.ValidationError({"error_type": "invalid_request", "message": "User is not found."})
         
 
 class ResendNewOTPSerializer(serializers.Serializer):
     user_id = serializers.CharField(min_length=1, write_only=True)
-
-    class Meta:
-        fields = ['user_id']
+    # no need 
+    # class Meta:
+    #     fields = ['user_id']
 
 
 
