@@ -46,6 +46,8 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     user= UserSerializer() 
     confirm_password = serializers.CharField(write_only=True, required=True)
+    image = serializers.ImageField( allow_empty_file = False , use_url = False )
+    # images = serializers.ImageField( read_only=True)
     class Meta : 
         model = Doctor   
         fields = ['id','user','confirm_password','phone','syndicateNo','specialization','university','work_experience','gender','image']
@@ -79,6 +81,7 @@ class PatientSerializer(serializers.ModelSerializer):
  
     user= UserSerializer() 
     confirm_password = serializers.CharField(write_only=True, required=True)
+    image = serializers.ImageField( allow_empty_file = False , use_url = False )
     class Meta : 
         model = Patient
         fields =['id','user','confirm_password','gender','phone','birthdate','image']
