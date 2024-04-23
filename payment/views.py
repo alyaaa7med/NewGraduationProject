@@ -50,8 +50,8 @@ class CreateCheckoutSessionView(APIView):
                     'quantity': 1,
                 },],
                 mode='payment', # as you pay one time not subscription
-                success_url= LocalDomain+'payment/success', #/{{patient_session}} no need now 
-                cancel_url=  LocalDomain+'payment/cancel', # may change accourding to flutter 
+                success_url= PublicDomain+'payment/success', #/{{patient_session}} no need now 
+                cancel_url=  PublicDomain+'payment/cancel', # may change accourding to flutter 
                 metadata = {'patient_id':patient_id , 'appointment_id':appointment_id } # payment_intent_data.metadata
             )
             
