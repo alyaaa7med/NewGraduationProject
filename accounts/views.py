@@ -17,14 +17,14 @@ import base64
 
 
 
-# @extend_schema_view(
-#     create=extend_schema(description="This Endpoint is secured with jwt token"),
-#     list=extend_schema(description="This Endpoint is secured with jwt token"),
-#     retrieve=extend_schema(description="This Endpoint is secured with jwt token"),
-#     update=extend_schema(description="This Endpoint is secured with jwt token"),
-#     partial_update=extend_schema(description="This Endpoint is secured with jwt token"),
-#     destroy=extend_schema(description="This Endpoint is secured with jwt token")
-# )
+@extend_schema_view(
+    create=extend_schema(description="This Endpoint is secured with jwt token"),
+    list=extend_schema(description="This Endpoint is secured with jwt token"),
+    retrieve=extend_schema(description="This Endpoint is secured with jwt token"),
+    update=extend_schema(description="This Endpoint is secured with jwt token"),
+    partial_update=extend_schema(description="This Endpoint is secured with jwt token"),
+    destroy=extend_schema(description="This Endpoint is secured with jwt token")
+)
 
 class DoctorView(viewsets.ModelViewSet):
     queryset = Doctor.objects.all().order_by('pk')
@@ -33,14 +33,14 @@ class DoctorView(viewsets.ModelViewSet):
     pagination_class = Pagination
     
 
-# @extend_schema_view(
-#     create=extend_schema(description="This Endpoint is secured with jwt token"),
-#     list=extend_schema(description="This Endpoint is secured with jwt token"),
-#     retrieve=extend_schema(description="This Endpoint is secured with jwt token"),
-#     update=extend_schema(description="This Endpoint is secured with jwt token"),
-#     partial_update=extend_schema(description="This Endpoint is secured with jwt token"),
-#     destroy=extend_schema(description="This Endpoint is secured with jwt token")
-# )
+@extend_schema_view(
+    create=extend_schema(description="This Endpoint is secured with jwt token"),
+    list=extend_schema(description="This Endpoint is secured with jwt token"),
+    retrieve=extend_schema(description="This Endpoint is secured with jwt token"),
+    update=extend_schema(description="This Endpoint is secured with jwt token"),
+    partial_update=extend_schema(description="This Endpoint is secured with jwt token"),
+    destroy=extend_schema(description="This Endpoint is secured with jwt token")
+)
 class PatientView(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer

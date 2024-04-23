@@ -7,16 +7,16 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from accounts.models import Doctor , Patient
 from django.shortcuts import redirect
-# from drf_spectacular.utils import extend_schema_view, extend_schema
+from drf_spectacular.utils import extend_schema_view, extend_schema
 
-# @extend_schema_view(
-#     create=extend_schema(description="This Endpoint is secured with jwt token"),
-#     list=extend_schema(description="This Endpoint is secured with jwt token"),
-#     retrieve=extend_schema(description="This Endpoint is secured with jwt token"),
-#     update=extend_schema(description="This Endpoint is secured with jwt token"),
-#     partial_update=extend_schema(description="This Endpoint is secured with jwt token"),
-#     destroy=extend_schema(description="This Endpoint is secured with jwt token")
-# )
+@extend_schema_view(
+    create=extend_schema(description="This Endpoint is secured with jwt token"),
+    list=extend_schema(description="This Endpoint is secured with jwt token"),
+    retrieve=extend_schema(description="This Endpoint is secured with jwt token"),
+    update=extend_schema(description="This Endpoint is secured with jwt token"),
+    partial_update=extend_schema(description="This Endpoint is secured with jwt token"),
+    destroy=extend_schema(description="This Endpoint is secured with jwt token")
+)
 
 # only doctor can crud his appointements 
 class AppointementView(viewsets.ModelViewSet):
