@@ -9,8 +9,22 @@ from rest_framework import status
 from .utils import send_generated_otp_to_email
 from rest_framework.exceptions import ValidationError
 from .pagination import Pagination
-
+from drf_spectacular.utils import extend_schema_view, extend_schema
 import base64
+
+
+#  create=extend_schema(description="Create a new object", summary="Create Object"),
+
+
+
+@extend_schema_view(
+    create=extend_schema(description="This Endpoint is secured with jwt token"),
+    list=extend_schema(description="This Endpoint is secured with jwt token"),
+    retrieve=extend_schema(description="This Endpoint is secured with jwt token"),
+    update=extend_schema(description="This Endpoint is secured with jwt token"),
+    partial_update=extend_schema(description="This Endpoint is secured with jwt token"),
+    destroy=extend_schema(description="This Endpoint is secured with jwt token")
+)
 
 class DoctorView(viewsets.ModelViewSet):
     queryset = Doctor.objects.all().order_by('pk')
@@ -18,6 +32,15 @@ class DoctorView(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser,FormParser]
     pagination_class = Pagination
     
+
+@extend_schema_view(
+    create=extend_schema(description="This Endpoint is secured with jwt token"),
+    list=extend_schema(description="This Endpoint is secured with jwt token"),
+    retrieve=extend_schema(description="This Endpoint is secured with jwt token"),
+    update=extend_schema(description="This Endpoint is secured with jwt token"),
+    partial_update=extend_schema(description="This Endpoint is secured with jwt token"),
+    destroy=extend_schema(description="This Endpoint is secured with jwt token")
+)
 class PatientView(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer

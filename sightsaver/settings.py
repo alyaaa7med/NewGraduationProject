@@ -67,7 +67,7 @@ MIDDLEWARE = [
 
 # REST_FRAMEWORK = {
 #     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
-#     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",   
+#        
 # }
 
 
@@ -75,10 +75,38 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+
+DESCRIPTION = """Documentation of API endpoints of Sight Saver application.
+
+Handle Error Codes:
+```json
+    400: "Bad request.",
+    401: "Unauthorized.",
+    404: "Not found.",
+    405: "Method not allowed.",
+    500: "Internal server error.",
+    200: "OK.",
+    201: "Created.",
+    202: "Accepted.",
+```
+
+"""
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE':'SIGHT SAVER API DOCUMENTATION',
+    'DESCRIPTION': DESCRIPTION ,
+    'SERVE_PERMISSIONS': ["rest_framework.permissions.AllowAny"],
+
+}
+
+
 SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('Bearer','JWT'),
+    'AUTH_HEADER_TYPES': ('Bearer',), #'JWT'
     'ACCESS_TOKEN_LIFETIME': timedelta(days=350),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=350),
 
