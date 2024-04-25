@@ -17,7 +17,7 @@ urlpatterns += [
 
     # you can get patient from the request.user 
     
-    path('patients/<int:patient_pk>/appointments', PatientAppointment.as_view()),
+    path('users/<int:user_pk>/appointments', PatientAppointment.as_view()),
     ]
 
 

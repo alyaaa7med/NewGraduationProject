@@ -65,7 +65,7 @@ class Doctor(models.Model):
     specialization = models.CharField(max_length=255)
     work_experience= models.CharField(max_length=255)
     gender= models.CharField(max_length=7,default='unknown')
-    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/") # ,default="accounts/images/carton.png"
+    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/" ) # ,default="accounts/images/carton.png"
 
     REQUIRED_FIELDS= ["phone","syndicateNo","university","specialization","image"]  # null = False + blank = False 
 

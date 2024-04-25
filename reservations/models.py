@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import Doctor , Patient
+from accounts.models import Doctor , User
 
 
 class Appointement (models.Model):
@@ -21,7 +21,7 @@ class Appointement (models.Model):
     state = models.CharField(max_length = 10, choices = State_CHOICES , default = 'free' )
     # doctor = models.ManyToManyField(Doctor) i think it may help if the admin is the person who registers  # By default, Django does not cascade delete related objects for ManyToManyField. Therefore, deleting a Doctor won't automatically delete associated Appointment instances.
     doctor = models.ForeignKey(Doctor,on_delete=models.CASCADE , null = True) # i put null because of the existing database rows
-    patient = models.ForeignKey(Patient , on_delete = models.SET_NULL , null =True )
+    user = models.ForeignKey(User , on_delete = models.SET_NULL , null =True )
 
 
     REQUIRED_FIELDS= ["day","date","start_at","end_at","type","price","state"] 

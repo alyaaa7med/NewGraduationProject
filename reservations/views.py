@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from accounts.models import Doctor , Patient
+from accounts.models import Doctor , Patient , User
 from django.shortcuts import redirect
 from drf_spectacular.utils import extend_schema_view, extend_schema
 
@@ -54,7 +54,7 @@ class AppointementView(viewsets.ModelViewSet):
    
 
 
-class BrowsingAppointements (APIView): # get the free appointements 
+class BrowsingAppointements (APIView): # any user can  get the free appointements 
 
     def get (self , request , *args, **kwargs):
         doctor_pk = self.kwargs['doctor_pk']
@@ -85,9 +85,9 @@ class BookAppointment (APIView):
             # return 
             # xx = serializer.validated_data
             appointment_id = serializer.validated_data['appointment_id']
-            patient_id = serializer.validated_data['patient_id']
+            user_id = serializer.validated_data['user_id']
                   
-            return redirect(f'../payment/checkout-session?appointment_id={appointment_id}&patient_id={patient_id}')
+            return redirect(f'../payment/checkout-session?appointment_id={appointment_id}&user_id={user_id}')
 
         except :
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -96,16 +96,16 @@ class PatientAppointment (APIView) :
     
         
     def get (self , request , *args, **kwargs):
-        patient_pk = self.kwargs['patient_pk']
+        user_pk = self.kwargs['user_pk']
       
         try :
-            patient = Patient.objects.get(id = patient_pk)
+            user = User.objects.get(id = user_pk)
             # Retrieve appointments for the given doctor_pk
             # Correct usage of .filter() not .get() to retrieve a queryset of multiple objects
-        except : 
+        except User.DoesNotExist : 
             return Response ({'message':'No patient with this id , use a valid one or sign up first'}, status=status.HTTP_400_BAD_REQUEST)
 
-        appointements = Appointement.objects.filter(patient=patient_pk)
+        appointements = Appointement.objects.filter(user=user_pk)
         serializer = AppointmentSerializer(appointements, many=True ) # Serialize appointments data as needed
         return Response(serializer.data, status=status.HTTP_200_OK) # here i do not use the validated data , the validate method will not be executed 
         

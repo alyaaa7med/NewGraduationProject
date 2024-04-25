@@ -46,7 +46,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     user= UserSerializer() 
     confirm_password = serializers.CharField(write_only=True, required=True)
-    image = serializers.ImageField( allow_empty_file = False , use_url = False )
+    image = serializers.ImageField( allow_empty_file = False  , use_url = False)
     # images = serializers.ImageField( read_only=True)
     class Meta : 
         model = Doctor   

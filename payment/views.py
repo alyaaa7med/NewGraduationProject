@@ -7,12 +7,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.shortcuts import redirect
 import stripe
-from accounts.models import Patient
+from accounts.models import Patient , User
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-LocalDomain='http://127.0.0.1:8000/'
+Local='http://127.0.0.1:8000/'
 PublicDomain='https://sightsaver.onrender.com/'
 
 
@@ -32,9 +32,10 @@ class Cancelview(APIView):
 class CreateCheckoutSessionView(APIView):
     
     def get(self, request ):
+        # url parameter 
         
         appointment_id = int(request.GET.get('appointment_id'))
-        patient_id = int(request.GET.get('patient_id'))
+        user_id = int(request.GET.get('user_id'))
 
         try:
             Appointment_instance = Appointement.objects.get(id = appointment_id )
@@ -52,7 +53,7 @@ class CreateCheckoutSessionView(APIView):
                 mode='payment', # as you pay one time not subscription
                 success_url= PublicDomain+'payment/success', #/{{patient_session}} no need now 
                 cancel_url=  PublicDomain+'payment/cancel', # may change accourding to flutter 
-                metadata = {'patient_id':patient_id , 'appointment_id':appointment_id } # payment_intent_data.metadata
+                metadata = {'user_id':user_id , 'appointment_id':appointment_id } # payment_intent_data.metadata
             )
             
             return redirect ( checkout_stripe_session.url)
@@ -105,11 +106,11 @@ def WebhookView(request):
 
     if session.mode == 'payment' and session.payment_status == 'paid':
       appointment_id = session.metadata['appointment_id']
-      patient_id = session.metadata['patient_id']
-      patient = Patient.objects.get(id = patient_id)
+      user_id = session.metadata['user_id']
+      user = User.objects.get(id = user_id)
 
       appointment = Appointement.objects.get(id = appointment_id)  
-      appointment.patient= patient
+      appointment.user= user
       appointment.state = 'booked'
       appointment.save()
       

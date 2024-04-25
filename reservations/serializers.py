@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Appointement
-from accounts.models import Doctor , Patient
+from accounts.models import Doctor , Patient , User
 
 
 class AppointmentSerializer(serializers.ModelSerializer): # it has create , update , delete 
@@ -8,7 +8,7 @@ class AppointmentSerializer(serializers.ModelSerializer): # it has create , upda
     class Meta :
         model = Appointement
         fields = '__all__'
-        read_only_fields = ['state','doctor','patient']
+        read_only_fields = ['state','doctor','user']
 
     def validate(self , data):
         # it lacks handling the conflicts between 2 appointements (start - end ) for the doctor 
@@ -58,18 +58,18 @@ class AppointmentSerializer(serializers.ModelSerializer): # it has create , upda
     
 class BookAppointmentSerializer(serializers.Serializer):
     appointment_id = serializers.IntegerField(write_only=True)
-    patient_id = serializers.IntegerField(write_only=True)
+    user_id = serializers.IntegerField(write_only=True)
 
     def validate(self, attrs):
         appointment_id = attrs.get('appointment_id')
-        patient_id = attrs.get('patient_id')
+        user_id = attrs.get('user_id')
         
         try:
             appointment = Appointement.objects.get(id=appointment_id)    
             try:
-                patient = Patient.objects.get(id=patient_id)
-            except Patient.DoesNotExist:
-                raise serializers.ValidationError({"message": "This patient does not exist"})
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                raise serializers.ValidationError({"message": "This User does not exist"})
         
         except Appointement.DoesNotExist:
             raise serializers.ValidationError({"message": "This appointment does not exist"})
