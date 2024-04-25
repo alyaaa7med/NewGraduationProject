@@ -12,12 +12,12 @@ router2.register(r'appointements', AppointementView, basename='appointements')
 urlpatterns = router2.urls 
 
 urlpatterns += [
-    path('doctors/<int:doctor_pk>/appointments', BrowsingAppointements.as_view(), name='doctor-appointments-browsing'),
+    path('doctors/<int:doctor_id>/appointments', BrowsingAppointements.as_view(), name='doctor-appointments-browsing'),
     path('book',BookAppointment.as_view()),
 
     # you can get patient from the request.user 
     
-    path('users/<int:user_pk>/appointments', PatientAppointment.as_view()),
+    path('users/<int:user_id>/appointments', PatientAppointment.as_view()),
     ]
 
 

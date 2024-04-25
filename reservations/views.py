@@ -57,16 +57,16 @@ class AppointementView(viewsets.ModelViewSet):
 class BrowsingAppointements (APIView): # any user can  get the free appointements 
 
     def get (self , request , *args, **kwargs):
-        doctor_pk = self.kwargs['doctor_pk']
+        doctor_id = self.kwargs['doctor_id']
         
         try :
-            doctor_instance = Doctor.objects.get(id=doctor_pk)
+            doctor_instance = Doctor.objects.get(id=doctor_id)
             # Retrieve appointments for the given doctor_pk
             # Correct usage of .filter() not .get() to retrieve a queryset of multiple objects
         except : 
             return Response ({'message':'No doctor with this id , use a valid one or sign up first'}, status=status.HTTP_400_BAD_REQUEST)
 
-        appointements = Appointement.objects.filter(doctor=doctor_pk, state='free')
+        appointements = Appointement.objects.filter(doctor=doctor_id, state='free')
         serializer = AppointmentSerializer(appointements, many=True ) # Serialize appointments data as needed
         return Response(serializer.data, status=status.HTTP_200_OK) # here i do not use the validated data , the validate method will not be executed 
         
@@ -96,16 +96,16 @@ class PatientAppointment (APIView) :
     
         
     def get (self , request , *args, **kwargs):
-        user_pk = self.kwargs['user_pk']
+        user_id = self.kwargs['user_id']
       
         try :
-            user = User.objects.get(id = user_pk)
+            user = User.objects.get(id = user_id)
             # Retrieve appointments for the given doctor_pk
             # Correct usage of .filter() not .get() to retrieve a queryset of multiple objects
         except User.DoesNotExist : 
             return Response ({'message':'No patient with this id , use a valid one or sign up first'}, status=status.HTTP_400_BAD_REQUEST)
 
-        appointements = Appointement.objects.filter(user=user_pk)
+        appointements = Appointement.objects.filter(user=user_id)
         serializer = AppointmentSerializer(appointements, many=True ) # Serialize appointments data as needed
         return Response(serializer.data, status=status.HTTP_200_OK) # here i do not use the validated data , the validate method will not be executed 
         
