@@ -1,6 +1,6 @@
 from rest_framework import viewsets  
-from .models import Doctor , Patient  ,otpcode , User
-from .serializers import DoctorSerializer,ResendNewOTPSerializer ,VerifyOTPRequestSerializer, PatientSerializer , LoginSerializer , PasswordResetRequestSerializer, SetConfirmNewPasswordSerializer 
+from .models import Doctor , Patient  ,otpcode , User , photo
+from .serializers import DoctorSerializer,ResendNewOTPSerializer ,VerifyOTPRequestSerializer, PatientSerializer , LoginSerializer , PasswordResetRequestSerializer ,check, SetConfirmNewPasswordSerializer 
 from rest_framework.parsers import MultiPartParser , FormParser
 from rest_framework.response import Response
 from django.utils import timezone 
@@ -183,10 +183,20 @@ class ResendNewOTP(GenericAPIView):
   
 
 
+class Checkimage(GenericAPIView):
+    
+    serializer_class= check
 
-
-
-
-
+    def post(self, request):
+        
+        serialized = self.get_serializer(data=request.data)
+        try :
+            serialized.is_valid(raise_exception=True)
+            serialized.save()
+        
+            return Response(serialized.data
+                , status=status.HTTP_200_OK)        
+        except ValidationError as e:
+            return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
 

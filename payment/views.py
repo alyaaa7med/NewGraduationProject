@@ -102,7 +102,7 @@ def WebhookView(request):
   if event['type'] == 'checkout.session.completed':
     session = event['data']['object']
     
-    print(session) # i can get the email and mark the session is booked 
+    # print(session) # i can get the email and mark the session is booked 
 
     if session.mode == 'payment' and session.payment_status == 'paid':
       appointment_id = session.metadata['appointment_id']

@@ -1,7 +1,7 @@
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Doctor , Patient , otpcode
+from .models import Doctor , Patient , otpcode , photo
 from django.contrib.auth.hashers import make_password
 from .utils import send_generated_otp_to_email
 import base64
@@ -248,4 +248,14 @@ class ResendNewOTPSerializer(serializers.Serializer):
     #     fields = ['user_id']
 
 
-
+class check(serializers.ModelSerializer):
+    
+    class Meta :
+        model = photo 
+        fields = '__all__'
+ 
+    def create(self, validated_data): 
+       
+        image = photo.objects.create(**validated_data)
+        # image.save()
+        return image

@@ -89,3 +89,5 @@ class Patient(models.Model):
     REQUIRED_FIELDS= ["phone","image"]  # null = False + blank = False 
 
 
+class photo (models.Model):
+    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")
