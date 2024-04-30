@@ -1,6 +1,6 @@
 from rest_framework import viewsets  
-from .models import Doctor , Patient  ,otpcode , User , ProfileImage
-from .serializers import DoctorSerializer,ResendNewOTPSerializer ,VerifyOTPRequestSerializer, PatientSerializer , LoginSerializer , PasswordResetRequestSerializer , SetConfirmNewPasswordSerializer , ProfileImageSerializer
+from .models import Doctor , Patient  ,otpcode , User , ProfileImage , Rating
+from .serializers import DoctorSerializer,ResendNewOTPSerializer ,VerifyOTPRequestSerializer, PatientSerializer , LoginSerializer , PasswordResetRequestSerializer , SetConfirmNewPasswordSerializer , RatingSerializer
 from rest_framework.parsers import MultiPartParser , FormParser
 from rest_framework.response import Response
 from django.utils import timezone 
@@ -46,11 +46,11 @@ class PatientView(viewsets.ModelViewSet):
     serializer_class = PatientSerializer
    
 
-class ProfileImageView(viewsets.ModelViewSet):
+# class ProfileImageView(viewsets.ModelViewSet):
     
-    queryset = ProfileImage.objects.all()
-    serializer_class = ProfileImageSerializer
-    parser_classes = [MultiPartParser,FormParser]
+#     queryset = ProfileImage.objects.all()
+#     serializer_class = ProfileImageSerializer
+#     parser_classes = [MultiPartParser,FormParser]
 
 
 
@@ -205,5 +205,18 @@ class ResendNewOTP(GenericAPIView):
 #                 , status=status.HTTP_200_OK)        
 #         except ValidationError as e:
 #             return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RatingViewSet(viewsets.ModelViewSet):
+    queryset = Rating.objects.all()
+    serializer_class = RatingSerializer
+    
+
+#Get all Reviews for specific doctor
+@api_view(['GET'])
+def doctor_rating_list(request, doctor_id):
+    reviews = Rating.objects.filter(doctor_id=doctor_id)
+    serializer = RatingSerializer(reviews, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 

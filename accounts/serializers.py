@@ -1,7 +1,7 @@
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Doctor , Patient , otpcode , ProfileImage
+from .models import Doctor , Patient , otpcode , ProfileImage , Rating
 from django.contrib.auth.hashers import make_password
 from .utils import send_generated_otp_to_email
 import base64
@@ -46,12 +46,12 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     user= UserSerializer() 
     confirm_password = serializers.CharField(write_only=True, required=True)
-    image = serializers.HyperlinkedRelatedField(
-        queryset = ProfileImage.objects.all(),
-        view_name='profile-image')
+    # image = serializers.HyperlinkedRelatedField(
+    #     queryset = ProfileImage.objects.all(),
+    #     view_name='profile-image')
     class Meta : 
         model = Doctor   
-        fields = ['id','user','confirm_password','phone','syndicateNo','specialization','university','work_experience','gender','image']
+        fields = ['id','user','confirm_password','phone','syndicateNo','specialization','university','work_experience','gender']
         
 
     def validate(self, data):
@@ -265,3 +265,18 @@ class ResendNewOTPSerializer(serializers.Serializer):
 #         image = photo.objects.create(**validated_data)
 #         # image.save()
 #         return image
+
+        
+class RatingSerializer(serializers.ModelSerializer):
+    
+    patient_name = serializers.SerializerMethodField()
+
+    def get_patient_name(self, obj):
+        return obj.patient.user.name
+
+    class Meta:
+        model = Rating
+        fields = ('id', 'patient', 'patient_name', 'doctor', 'stars', 'title', 'description', 'created_at')
+        
+
+

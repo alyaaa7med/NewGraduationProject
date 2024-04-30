@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _ 
 from .forms import CustomUserChangeForm , CustomUserCreationForm
-from .models import User  , Doctor ,Patient ,otpcode
+from .models import User  , Doctor ,Patient ,otpcode , Rating
 
 class UserAdmin(BaseUserAdmin):
     ordering = ["email"]
@@ -46,7 +46,15 @@ class UserAdmin(BaseUserAdmin):
         )
 
 
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ['id', 'doctor', 'patient', 'stars','description','created_at']
+    list_filter = ['doctor', 'patient']
+    
+
 admin.site.register(User,UserAdmin)
 admin.site.register(Doctor)
 admin.site.register(Patient)
 admin.site.register(otpcode)
+admin.site.register(Rating, RatingAdmin)
+
+

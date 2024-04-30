@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManger 
 import secrets 
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class User(AbstractBaseUser,PermissionsMixin) :
@@ -78,6 +79,25 @@ class Doctor(models.Model):
     def __str__(self) :
         return self.user.email
     
+    
+    def no_of_ratings(self):
+        ratings = Rating.objects.filter(doctor=self)
+        return len(ratings)
+    
+    def avg_rating(self):
+        # sum of ratings stars  / len of rating hopw many ratings 
+        sum = 0
+        ratings = Rating.objects.filter(doctor=self) # no of ratings happened to the meal 
+
+        for x in ratings:
+            sum += x.stars
+
+        if len(ratings) > 0:
+            return sum / len(ratings)
+        else:
+            return 0
+
+    
 class Patient(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     phone= models.CharField(max_length=15,unique=True)
@@ -92,3 +112,20 @@ class Patient(models.Model):
 class ProfileImage (models.Model):
     doctor = models.OneToOneField(Doctor , on_delete=models.CASCADE , null =True)
     image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")
+
+
+class Rating(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE) #product
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE) #user
+    title = models.CharField(max_length=100, blank=True , null=True)
+    description = models.TextField(max_length=400, blank=True , null=True)
+    stars = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
+    created_at = models.DateField(auto_now_add=True)
+
+   # def __str__(self) :
+    #    return self.doctor
+    
+
+    class Meta:
+        unique_together = (('patient', 'doctor'),)
+        index_together = (('patient', 'doctor'),)
