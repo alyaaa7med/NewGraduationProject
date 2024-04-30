@@ -1,7 +1,9 @@
 
 from django.urls import path,include
 from rest_framework.routers import DefaultRouter
-from .views import DoctorView , PatientView  , LoginUserView ,ResendNewOTP, PasswordResetRequestView ,VerifyOTPRequestView ,SetConfirmNewPasswordView ,Checkimage
+from rest_framework.routers import DefaultRouter
+
+from .views import DoctorView , PatientView  , LoginUserView ,ResendNewOTP, PasswordResetRequestView ,VerifyOTPRequestView ,SetConfirmNewPasswordView  , ProfileImageView 
 
 router = DefaultRouter()
 router.register(r'doctors', DoctorView)
@@ -17,6 +19,6 @@ urlpatterns = [
     path('verify-otp',VerifyOTPRequestView.as_view()),
     path('set-confirm-new-password',SetConfirmNewPasswordView.as_view()),
     path('resend-new-otp',ResendNewOTP.as_view()),
-    path('Checkimage',Checkimage.as_view()),
+    path('image/',ProfileImageView.as_view({'get': 'list'}) ,  name='profile-image')
 ] 
 urlpatterns += router.urls

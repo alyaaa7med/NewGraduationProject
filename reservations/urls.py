@@ -15,7 +15,7 @@ urlpatterns += [
     path('doctors/<int:doctor_id>/appointments', BrowsingAppointements.as_view(), name='doctor-appointments-browsing'),
     path('book',BookAppointment.as_view()),
 
-    # you can get patient from the request.user 
+    # you can get the user from the request.user 
     
     path('users/<int:user_id>/appointments', PatientAppointment.as_view()),
     ]

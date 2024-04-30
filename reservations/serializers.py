@@ -37,7 +37,8 @@ class AppointmentSerializer(serializers.ModelSerializer): # it has create , upda
     # check if the combination already exists for the same doctor 
         doctor_pk = self.context.get('doctor_pk')
         doctor = Doctor.objects.get(id=doctor_pk)
-
+        
+        # this combination is unique 
         if Appointement.objects.filter(day=validated_data['day'],
                                        date=validated_data['date'],
                                        start_at=validated_data['start_at'],

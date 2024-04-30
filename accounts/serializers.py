@@ -1,7 +1,7 @@
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Doctor , Patient , otpcode , photo
+from .models import Doctor , Patient , otpcode , ProfileImage
 from django.contrib.auth.hashers import make_password
 from .utils import send_generated_otp_to_email
 import base64
@@ -46,8 +46,9 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     user= UserSerializer() 
     confirm_password = serializers.CharField(write_only=True, required=True)
-    image = serializers.ImageField( allow_empty_file = False  , use_url = False)
-    # images = serializers.ImageField( read_only=True)
+    image = serializers.HyperlinkedRelatedField(
+        queryset = ProfileImage.objects.all(),
+        view_name='profile-image')
     class Meta : 
         model = Doctor   
         fields = ['id','user','confirm_password','phone','syndicateNo','specialization','university','work_experience','gender','image']
@@ -81,10 +82,9 @@ class PatientSerializer(serializers.ModelSerializer):
  
     user= UserSerializer() 
     confirm_password = serializers.CharField(write_only=True, required=True)
-    image = serializers.ImageField( allow_empty_file = False , use_url = False )
     class Meta : 
         model = Patient
-        fields =['id','user','confirm_password','gender','phone','birthdate','image']
+        fields =['id','user','confirm_password','gender','phone','birthdate']
 
     
     def validate(self, data):
@@ -108,6 +108,12 @@ class PatientSerializer(serializers.ModelSerializer):
     # def update(self,validated_data):
     #     pass
   
+class ProfileImageSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = ProfileImage
+        fields = '__all__'
+
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=155,write_only=True, min_length=6)
@@ -248,14 +254,14 @@ class ResendNewOTPSerializer(serializers.Serializer):
     #     fields = ['user_id']
 
 
-class check(serializers.ModelSerializer):
+# class check(serializers.ModelSerializer):
     
-    class Meta :
-        model = photo 
-        fields = '__all__'
+#     class Meta :
+#         model = photo 
+#         fields = '__all__'
  
-    def create(self, validated_data): 
+#     def create(self, validated_data): 
        
-        image = photo.objects.create(**validated_data)
-        # image.save()
-        return image
+#         image = photo.objects.create(**validated_data)
+#         # image.save()
+#         return image

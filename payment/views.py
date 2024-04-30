@@ -26,12 +26,13 @@ class Cancelview(APIView):
     
     def get(self, request):
 
-        return Response({"message":"canceled"})
+        return Response({"message":"payment is canceled"})
     
 
 class CreateCheckoutSessionView(APIView):
     
     def get(self, request ):
+        
         # url parameter 
         
         appointment_id = int(request.GET.get('appointment_id'))

@@ -39,7 +39,7 @@ class AppointementView(viewsets.ModelViewSet):
         if instance.patient :
             return Response({"message":"this appoitment is booked by a patient"}, status= status.HTTP_400_BAD_REQUEST)
         
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message":"this appointment deleted successfully "} ,status=status.HTTP_204_NO_CONTENT)
     
 
     def get_serializer_context(self):
@@ -103,7 +103,7 @@ class PatientAppointment (APIView) :
             # Retrieve appointments for the given doctor_pk
             # Correct usage of .filter() not .get() to retrieve a queryset of multiple objects
         except User.DoesNotExist : 
-            return Response ({'message':'No patient with this id , use a valid one or sign up first'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response ({'message':'No user with this id , use a valid one or sign up first'}, status=status.HTTP_400_BAD_REQUEST)
 
         appointements = Appointement.objects.filter(user=user_id)
         serializer = AppointmentSerializer(appointements, many=True ) # Serialize appointments data as needed
