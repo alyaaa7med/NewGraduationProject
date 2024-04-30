@@ -11,6 +11,10 @@ from rest_framework.exceptions import ValidationError
 from .pagination import Pagination
 from drf_spectacular.utils import extend_schema_view, extend_schema
 import base64
+from rest_framework import filters
+from rest_framework.decorators import api_view
+
+
 
 
 #  create=extend_schema(description="Create a new object", summary="Create Object"),
@@ -31,6 +35,19 @@ class DoctorView(viewsets.ModelViewSet):
     serializer_class = DoctorSerializer
     parser_classes = [MultiPartParser,FormParser]
     pagination_class = Pagination
+
+    #Searching about doctor by his name 
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['user__name']
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.query_params.get('query', None)
+        if query:
+            queryset = queryset.filter(
+                name__icontains=query
+            )
+        return queryset
     
 
 # @extend_schema_view(
