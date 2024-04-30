@@ -1,6 +1,6 @@
 from rest_framework import viewsets  
-from .models import Doctor , Patient  ,otpcode , User , ProfileImage , Rating
-from .serializers import DoctorSerializer,ResendNewOTPSerializer ,VerifyOTPRequestSerializer, PatientSerializer , LoginSerializer , PasswordResetRequestSerializer , SetConfirmNewPasswordSerializer , RatingSerializer
+from .models import Doctor , Patient  ,otpcode , User  , Rating
+from .serializers import DoctorSerializer,ResendNewOTPSerializer ,VerifyOTPRequestSerializer, PatientSerializer , LoginSerializer , PasswordResetRequestSerializer , SetConfirmNewPasswordSerializer , RatingSerializer , photoserializer
 from rest_framework.parsers import MultiPartParser , FormParser
 from rest_framework.response import Response
 from django.utils import timezone 
@@ -61,13 +61,13 @@ class DoctorView(viewsets.ModelViewSet):
 class PatientView(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
-   
+    parser_classes = [MultiPartParser,FormParser]
+
 
 # class ProfileImageView(viewsets.ModelViewSet):
     
 #     queryset = ProfileImage.objects.all()
 #     serializer_class = ProfileImageSerializer
-#     parser_classes = [MultiPartParser,FormParser]
 
 
 
@@ -207,21 +207,21 @@ class ResendNewOTP(GenericAPIView):
   
 
 
-# class Checkimage(GenericAPIView):
+class Checkimage(GenericAPIView):
     
-#     serializer_class= check
+    serializer_class= photoserializer
 
-#     def post(self, request):
+    def post(self, request):
         
-#         serialized = self.get_serializer(data=request.data)
-#         try :
-#             serialized.is_valid(raise_exception=True)
-#             serialized.save()
+        serialized = self.get_serializer(data=request.data)
+        try :
+            serialized.is_valid(raise_exception=True)
+            serialized.save()
         
-#             return Response(serialized.data
-#                 , status=status.HTTP_200_OK)        
-#         except ValidationError as e:
-#             return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serialized.data
+                , status=status.HTTP_200_OK)        
+        except ValidationError as e:
+            return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RatingViewSet(viewsets.ModelViewSet):

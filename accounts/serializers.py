@@ -1,7 +1,7 @@
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Doctor , Patient , otpcode , ProfileImage , Rating
+from .models import Doctor , Patient , otpcode  , Rating , photo
 from django.contrib.auth.hashers import make_password
 from .utils import send_generated_otp_to_email
 import base64
@@ -46,9 +46,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     user= UserSerializer() 
     confirm_password = serializers.CharField(write_only=True, required=True)
-    # image = serializers.HyperlinkedRelatedField(
-    #     queryset = ProfileImage.objects.all(),
-    #     view_name='profile-image')
+    
     class Meta : 
         model = Doctor   
         fields = ['id','user','confirm_password','phone','syndicateNo','specialization','university','work_experience','gender']
@@ -108,12 +106,6 @@ class PatientSerializer(serializers.ModelSerializer):
     # def update(self,validated_data):
     #     pass
   
-class ProfileImageSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = ProfileImage
-        fields = '__all__'
-
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=155,write_only=True, min_length=6)
@@ -280,3 +272,8 @@ class RatingSerializer(serializers.ModelSerializer):
         
 
 
+class photoserializer (serializers.ModelSerializer ):
+    
+    class Meta :
+        model = photo 
+        fields = '__all__'

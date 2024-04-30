@@ -66,9 +66,9 @@ class Doctor(models.Model):
     specialization = models.CharField(max_length=255)
     work_experience= models.CharField(max_length=255)
     gender= models.CharField(max_length=7,default='unknown')
-    # image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/" ) # ,default="accounts/images/carton.png"
+    # image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/" ,null = True) # ,default="accounts/images/carton.png"
 
-    REQUIRED_FIELDS= ["phone","syndicateNo","university","specialization"]  # null = False + blank = False 
+    REQUIRED_FIELDS= ["phone","syndicateNo","university","specialization"] #,"image"  # null = False + blank = False 
 
 
     # def get_profile_picture(self):
@@ -103,15 +103,11 @@ class Patient(models.Model):
     phone= models.CharField(max_length=15,unique=True)
     birthdate = models.DateField()
     gender= models.CharField(max_length=7,default='unknown')
-    # image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")# no need ,default="accounts/images/carton.png"
+    # image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/",null =True)# no need ,default="accounts/images/carton.png"
 
 
-    REQUIRED_FIELDS= ["phone"]  # null = False + blank = False 
+    REQUIRED_FIELDS= ["phone"] #"image"  # null = False + blank = False 
 
-
-class ProfileImage (models.Model):
-    doctor = models.OneToOneField(Doctor , on_delete=models.CASCADE , null =True)
-    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")
 
 
 class Rating(models.Model):
@@ -129,3 +125,8 @@ class Rating(models.Model):
     class Meta:
         unique_together = (('patient', 'doctor'),)
         index_together = (('patient', 'doctor'),)
+
+    
+
+class photo(models.Model):
+    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")
