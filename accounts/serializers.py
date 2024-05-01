@@ -1,7 +1,7 @@
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Doctor , Patient , otpcode  , Rating , photo
+from .models import Doctor , Patient , otpcode  , Rating , photo , ProfileImage
 from django.contrib.auth.hashers import make_password
 from .utils import send_generated_otp_to_email
 import base64
@@ -46,10 +46,12 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     user= UserSerializer() 
     confirm_password = serializers.CharField(write_only=True, required=True)
+    # profile_image_url = serializers.SerializerMethodField(read_only =True),'profile_image_url'
+
     
     class Meta : 
         model = Doctor   
-        fields = ['id','user','confirm_password','phone','syndicateNo','specialization','university','work_experience','gender']
+        fields = ['id','user','confirm_password','phone','syndicateNo','specialization','university','work_experience','gender','avg_rating','no_of_ratings']
         
 
     def validate(self, data):
@@ -72,10 +74,18 @@ class DoctorSerializer(serializers.ModelSerializer):
         doctor = Doctor.objects.create(user=user,**validated_data)  # validated data does not have user 
         doctor.save()
         return doctor  # why not return user ? i tried it but i get an error
+    
+    
+    # def get_profile_image_url(self, obj):
         
-    # def update(self , validated_data):
-    #     doctor_pk = self.context.get('doctor_pk')
-     
+    #     try :
+    #         profile_image = obj.user.image
+        
+    #         return profile_image.image.path
+    #     except :
+    #         return None
+        
+   
 class PatientSerializer(serializers.ModelSerializer):
  
     user= UserSerializer() 
@@ -277,3 +287,23 @@ class photoserializer (serializers.ModelSerializer ):
     class Meta :
         model = photo 
         fields = '__all__'
+
+class ProfileImageSerializer (serializers.ModelSerializer) : 
+
+    class Meta : 
+        model = ProfileImage
+        fields = ['id','image']
+    
+    def create (self , validated_data):
+
+        doctor_pk = self.context.get('doctor_pk')
+        doctor = Doctor.objects.get(pk=doctor_pk)
+        user = doctor.user
+
+        profile_image = ProfileImage.objects.create(user=user,**validated_data)  
+        profile_image.save()
+        return profile_image  
+        
+   
+
+        

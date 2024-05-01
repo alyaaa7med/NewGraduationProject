@@ -123,10 +123,17 @@ class Rating(models.Model):
     
 
     class Meta:
-        unique_together = (('patient', 'doctor'),)
+        # unique_together = (('patient', 'doctor'),)
         index_together = (('patient', 'doctor'),)
 
     
 
 class photo(models.Model):
     image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")
+
+
+
+class ProfileImage(models.Model):
+    user = models.OneToOneField(User , on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")
+

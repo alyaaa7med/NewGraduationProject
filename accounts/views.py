@@ -1,6 +1,6 @@
 from rest_framework import viewsets  
-from .models import Doctor , Patient  ,otpcode , User  , Rating
-from .serializers import DoctorSerializer,ResendNewOTPSerializer ,VerifyOTPRequestSerializer, PatientSerializer , LoginSerializer , PasswordResetRequestSerializer , SetConfirmNewPasswordSerializer , RatingSerializer , photoserializer
+from .models import Doctor , Patient  ,otpcode , User  , Rating , ProfileImage
+from .serializers import DoctorSerializer,ResendNewOTPSerializer ,VerifyOTPRequestSerializer, PatientSerializer , LoginSerializer , PasswordResetRequestSerializer , SetConfirmNewPasswordSerializer , RatingSerializer , photoserializer , ProfileImageSerializer
 from rest_framework.parsers import MultiPartParser , FormParser
 from rest_framework.response import Response
 from django.utils import timezone 
@@ -64,11 +64,30 @@ class PatientView(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser,FormParser]
 
 
-# class ProfileImageView(viewsets.ModelViewSet):
+class ProfileImageView(viewsets.ModelViewSet):
     
-#     queryset = ProfileImage.objects.all()
-#     serializer_class = ProfileImageSerializer
+    queryset = ProfileImage.objects.all()
+    serializer_class = ProfileImageSerializer
 
+    
+    def get_serializer_context(self):
+
+        # got it from nested url doctor/1/appointement/1 
+        # return {'doctor_pk': self.kwargs['doctor_pk']}
+        return {'doctor_pk' : self.kwargs['doctor_pk'] }
+    
+
+    def get_queryset(self):
+            
+        doctor_pk = self.kwargs['doctor_pk']
+        doctor = Doctor.objects.get(pk=doctor_pk)
+        user = doctor.user
+        
+        return ProfileImage.objects.filter(user=user)
+
+   
+
+    
 
 
 # i should change GenericAPIView to APIView 
@@ -222,6 +241,8 @@ class Checkimage(GenericAPIView):
                 , status=status.HTTP_200_OK)        
         except ValidationError as e:
             return Response({"message": e.detail}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 class RatingViewSet(viewsets.ModelViewSet):
