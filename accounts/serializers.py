@@ -9,7 +9,6 @@ from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
-
 User = get_user_model()
 
 
@@ -44,15 +43,12 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     # to handle the user data 
 
-    user= UserSerializer() 
+    user = UserSerializer() 
     confirm_password = serializers.CharField(write_only=True, required=True)
-    # profile_image_url = serializers.SerializerMethodField(read_only =True),'profile_image_url'
 
-    
-    class Meta : 
+    class Meta:
         model = Doctor   
-        fields = ['id','user','confirm_password','phone','syndicateNo','specialization','university','work_experience','gender','avg_rating','no_of_ratings']
-        
+        fields = ['id', 'user', 'confirm_password', 'phone', 'syndicateNo', 'specialization', 'university', 'work_experience', 'gender', 'avg_rating', 'no_of_ratings']
 
     def validate(self, data):
         if data['user']['password'] != data['confirm_password']:
@@ -76,16 +72,17 @@ class DoctorSerializer(serializers.ModelSerializer):
         return doctor  # why not return user ? i tried it but i get an error
     
     
-    # def get_profile_image_url(self, obj):
-        
-    #     try :
-    #         profile_image = obj.user.image
-        
-    #         return profile_image.image.path
-    #     except :
-    #         return None
-        
-   
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        if hasattr(instance.user, 'profileimage') and instance.user.profileimage:
+            user_profile_image = instance.user.profileimage.image
+            representation['image'] = self.context['request'].build_absolute_uri(user_profile_image.url)
+        else:
+            representation['image'] = None
+            
+        return representation
+    
 class PatientSerializer(serializers.ModelSerializer):
  
     user= UserSerializer() 
@@ -113,8 +110,23 @@ class PatientSerializer(serializers.ModelSerializer):
         patient.save()
         return patient
     
-    # def update(self,validated_data):
-    #     pass
+    
+    def to_representation(self, instance):
+
+        representation = super().to_representation(instance)
+    
+        # hasattr(instance.user, 'profileimage'): This checks if the user object associated with 
+        # instance has an attribute named 'profileimage'. If it does, it returns True.
+        # instance.user.profileimage: This checks if the profileimage attribute of the user object
+        #  is not None. If it's not None, it returns True.        
+        if hasattr(instance.user, 'profileimage') and instance.user.profileimage:
+            user_profile_image = instance.user.profileimage.image
+            representation['image'] = self.context['request'].build_absolute_uri(user_profile_image.url)
+        else:
+            representation['image'] = None
+            
+        return representation
+   
   
 
 class LoginSerializer(serializers.Serializer):
@@ -256,18 +268,6 @@ class ResendNewOTPSerializer(serializers.Serializer):
     #     fields = ['user_id']
 
 
-# class check(serializers.ModelSerializer):
-    
-#     class Meta :
-#         model = photo 
-#         fields = '__all__'
- 
-#     def create(self, validated_data): 
-       
-#         image = photo.objects.create(**validated_data)
-#         # image.save()
-#         return image
-
         
 class RatingSerializer(serializers.ModelSerializer):
     
@@ -288,22 +288,24 @@ class photoserializer (serializers.ModelSerializer ):
         model = photo 
         fields = '__all__'
 
-class ProfileImageSerializer (serializers.ModelSerializer) : 
 
-    class Meta : 
+class ProfileImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
         model = ProfileImage
-        fields = ['id','image']
+        fields = ['id', 'image']
     
-    def create (self , validated_data):
-
-        doctor_pk = self.context.get('doctor_pk')
-        doctor = Doctor.objects.get(pk=doctor_pk)
-        user = doctor.user
-
-        profile_image = ProfileImage.objects.create(user=user,**validated_data)  
-        profile_image.save()
-        return profile_image  
+    def create(self, validated_data):
         
-   
+        user = self.context.get('user')
+        profile_image = ProfileImage.objects.create(user=user, **validated_data)
 
-        
+        return profile_image
+
+ 
+    # no need 
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     if instance.image:
+    #         representation['image'] = self.context['request'].build_absolute_uri(instance.image.url)
+    #     return representation

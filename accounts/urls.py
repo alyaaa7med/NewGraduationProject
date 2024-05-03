@@ -32,4 +32,4 @@ urlpatterns = [
     path('Doctor/<int:doctor_id>/Ratings/', doctor_rating_list, name='doctor-rating-list'),
 
 ] 
-urlpatterns += router.urls + doctor_router.urls + patient_router.urls
+urlpatterns += router.urls + patient_router.urls + doctor_router.urls 

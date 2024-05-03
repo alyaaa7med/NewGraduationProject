@@ -69,19 +69,34 @@ class ProfileImageView(viewsets.ModelViewSet):
     queryset = ProfileImage.objects.all()
     serializer_class = ProfileImageSerializer
 
-    
     def get_serializer_context(self):
 
-        # got it from nested url doctor/1/appointement/1 
-        # return {'doctor_pk': self.kwargs['doctor_pk']}
-        return {'doctor_pk' : self.kwargs['doctor_pk'] }
-    
 
+        if 'doctor_pk' in self.kwargs:
+            doctor_pk = self.kwargs['doctor_pk']
+            doctor = Doctor.objects.get(pk=doctor_pk)
+            user = doctor.user  
+
+            return {'request': self.request, 'user': user}
+
+        
+        else :
+            patient_pk = self.kwargs['patient_pk']
+            patient = Patient.objects.get(pk=patient_pk)
+            user = patient.user
+
+            return {'request': self.request, 'user': user}
+        
     def get_queryset(self):
             
-        doctor_pk = self.kwargs['doctor_pk']
-        doctor = Doctor.objects.get(pk=doctor_pk)
-        user = doctor.user
+        if 'doctor_pk' in self.kwargs:
+            doctor_pk = self.kwargs['doctor_pk']
+            doctor = Doctor.objects.get(pk=doctor_pk)
+            user = doctor.user
+        else :
+            patient_pk = self.kwargs['patient_pk']
+            patient = Patient.objects.get(pk=patient_pk)
+            user = patient.user
         
         return ProfileImage.objects.filter(user=user)
 
