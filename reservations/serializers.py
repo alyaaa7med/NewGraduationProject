@@ -53,6 +53,7 @@ class AppointmentSerializer(serializers.ModelSerializer): # it has create , upda
             instance.date = validated_data['date']
             instance.start_at = validated_data['start_at']
             instance.end_at = validated_data['end_at']
+            instance.price = validated_data['price']
             instance.save()  # Save the updated instance
             return instance
          

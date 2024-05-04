@@ -35,8 +35,7 @@ class AppointementView(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         # delete method in serializer does not work so i override the destroy
         instance = self.get_object()
-
-        if instance.patient :
+        if instance.user :
             return Response({"message":"this appoitment is booked by a patient"}, status= status.HTTP_400_BAD_REQUEST)
         
         return Response({"message":"this appointment deleted successfully "} ,status=status.HTTP_204_NO_CONTENT)
