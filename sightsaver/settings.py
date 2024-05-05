@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'payment.apps.PaymentConfig',
     'reservations.apps.ReservationsConfig',
+    'chat.apps.ChatConfig',
 ]
 
 MIDDLEWARE = [
