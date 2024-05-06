@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['sightsaver.onrender.com','localhost','127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,10 +48,12 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     'rest_framework_simplejwt',
+    'channels',
     # Internal app
     'accounts.apps.AccountsConfig',
     'payment.apps.PaymentConfig',
     'reservations.apps.ReservationsConfig',
+    'chat.apps.ChatConfig',
 ]
 
 MIDDLEWARE = [
@@ -152,6 +155,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'sightsaver.wsgi.application'
+ASGI_APPLICATION = 'sightsaver.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 
 # Database
