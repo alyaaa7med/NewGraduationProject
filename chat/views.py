@@ -34,21 +34,29 @@ class MessagesView(viewsets.ModelViewSet):
 
     def relatedUsers(self, request):
         curr_user = request.user
-        people1 = curr_user.sent_messages.values_list('receiver__id',
-                                         'receiver__email', 'receiver__name')
-        people2 = curr_user.received_messages.values_list('sender__id','sender__email',
-                                         'sender__name')
         
-        result_list_ = set(chain(people1, people2))
+        # Get all users the current user has sent or received messages from
+        related_users = User.objects.filter(
+            Q(sent_messages__receiver=curr_user) | Q(received_messages__sender=curr_user)
+        ).distinct()
+
         result_list = []
 
-        for x in result_list_:
-            x = list(x)
-            x[1] = request.META['HTTP_HOST'] + settings.MEDIA_URL + x[1]
-            result_list.append(x)
+        for user in related_users:
+            # Get the last message between the current user and the related user
+            last_message = Message.objects.filter(
+                Q(sender=curr_user, receiver=user) | Q(sender=user, receiver=curr_user)
+            ).latest('created_at')
 
-        keys = ["id", "email", "name"]
-        return JsonResponse([dict(zip(keys, person)) for person in result_list], safe=False)
+            # Create a dictionary containing user details and the last message content
+            user_data = {
+                "id": user.id,
+                "name": user.name,
+                "last_message": last_message.content if last_message else None
+            }
+            result_list.append(user_data)
+
+        return JsonResponse(result_list, safe=False)
 
     def check(self, request):
         curr_user = request.user
