@@ -48,11 +48,12 @@ class MessagesView(viewsets.ModelViewSet):
                 Q(sender=curr_user, receiver=user) | Q(sender=user, receiver=curr_user)
             ).latest('created_at')
 
-            # Create a dictionary containing user details and the last message content
+            # Create a dictionary containing user details, last message content, and sender ID
             user_data = {
                 "id": user.id,
                 "name": user.name,
-                "last_message": last_message.content if last_message else None
+                "last_message": last_message.content if last_message else None,
+                "last_message_sender_id": last_message.sender.id if last_message else None
             }
             result_list.append(user_data)
 
