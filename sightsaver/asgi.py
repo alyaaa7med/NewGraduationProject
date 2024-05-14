@@ -19,7 +19,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sightsaver.settings')
 application = get_asgi_application()
 
 
-the websocket will open at 127.0.0.1:8000/ws/<room_name>/
+#the websocket will open at 127.0.0.1:8000/ws/<room_name>/
 application = ProtocolTypeRouter({
     
     "http" : application,
