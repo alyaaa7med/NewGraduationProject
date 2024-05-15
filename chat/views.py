@@ -3,12 +3,14 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.conf import settings
 
+
 from rest_framework import viewsets, pagination
 from rest_framework.permissions import IsAuthenticated
 
 from accounts.models import User
 from .serializers import *
 from .models import *
+from accounts.models import *
 from .permissons import UserPermission
 
 class MessagesView(viewsets.ModelViewSet):
@@ -48,18 +50,25 @@ class MessagesView(viewsets.ModelViewSet):
                 Q(sender=curr_user, receiver=user) | Q(sender=user, receiver=curr_user)
             ).latest('created_at')
 
-            # Create a dictionary containing user details, last message content, sender ID, and seen status
+            # Get the profile image for the user
+            profile_image_url = None
+            profile_image = ProfileImage.objects.filter(user=user).first()
+            if profile_image:
+                profile_image_url = request.build_absolute_uri(profile_image.image.url)
+
+            # Create a dictionary containing user details, last message content, sender ID, and profile image URL
             user_data = {
                 "id": user.id,
                 "name": user.name,
                 "last_message": last_message.content if last_message else None,
                 "last_message_sender_id": last_message.sender.id if last_message else None,
-                "last_message_seen": last_message.seen if last_message else None
+                "last_message_seen": last_message.seen if last_message else None,
+                "profile_image_url": profile_image_url
             }
             result_list.append(user_data)
 
         return JsonResponse(result_list, safe=False)
-        
+    
     def check(self, request):
         curr_user = request.user
         latestMessage = curr_user.received_messages.last()
@@ -68,3 +77,5 @@ class MessagesView(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         receiver = User.objects.filter(id=self.kwargs['user_id']).first()
         serializer.save(sender=self.request.user, receiver=receiver)
+        
+        

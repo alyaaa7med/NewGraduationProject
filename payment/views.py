@@ -1,6 +1,6 @@
 from rest_framework.response import Response
-from rest_framework import status
-from reservations.models import Appointement
+from rest_framework import status, generics
+from reservations.models import Appointement 
 from django.conf import settings
 from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
@@ -8,6 +8,10 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 import stripe
 from accounts.models import Patient , User
+from .models import Notification
+from .serializers import NotificationSerializer
+from rest_framework.permissions import IsAuthenticated
+
 
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -15,53 +19,53 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 Local='http://127.0.0.1:8000/'
 PublicDomain='https://sightsaver.onrender.com/'
 
-
-class Successview(APIView):
-    
-    def get(self, request): # id of the appointment 
-
-        return Response({"message":"thanks for dealing with us, check your notification "})
-
-class Cancelview(APIView): 
-    
+class SuccessView(APIView):
     def get(self, request):
+        return Response({"message": "Thanks for dealing with us, check your notifications."})
 
-        return Response({"message":"payment is canceled"})
-    
+class CancelView(APIView):
+    def get(self, request):
+        return Response({"message": "Payment is canceled"})
 
 class CreateCheckoutSessionView(APIView):
-    
-    def get(self, request ):
-        
-        # url parameter 
-        
-        appointment_id = int(request.GET.get('appointment_id'))
-        user_id = int(request.GET.get('user_id'))
+    def get(self, request):
+        appointment_id = request.GET.get('appointment_id')
+        user_id = request.GET.get('user_id')
+
+        if not appointment_id or not user_id:
+            return Response({'message': 'appointment_id and user_id are required'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            Appointment_instance = Appointement.objects.get(id = appointment_id )
+            appointment_id = int(appointment_id)
+            user_id = int(user_id)
+        except ValueError:
+            return Response({'message': 'Invalid appointment_id or user_id'}, status=status.HTTP_400_BAD_REQUEST)
 
+        try:
+            appointment_instance = Appointement.objects.get(id=appointment_id)
+        except Appointement.DoesNotExist:
+            return Response({'message': 'Appointment not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
             checkout_stripe_session = stripe.checkout.Session.create(
                 line_items=[{
                     'price_data': {
-                        'currency':'egp',
-                        'unit_amount':int(Appointment_instance.price )*100,
-                        'product_data':{
-                            'name':Appointment_instance.type + ' session'}
+                        'currency': 'egp',
+                        'unit_amount': int(appointment_instance.price) * 100,
+                        'product_data': {
+                            'name': f"{appointment_instance.type} session"
+                        }
                     },
                     'quantity': 1,
-                },],
-                mode='payment', # as you pay one time not subscription
-                success_url= PublicDomain+'payment/success', #/{{patient_session}} no need now 
-                cancel_url=  PublicDomain+'payment/cancel', # may change accourding to flutter 
-                metadata = {'user_id':user_id , 'appointment_id':appointment_id } # payment_intent_data.metadata
+                }],
+                mode='payment',
+                success_url=PublicDomain + 'payment/success/',
+                cancel_url=PublicDomain + 'payment/cancel/',
+                metadata={'user_id': user_id, 'appointment_id': appointment_id}
             )
-            
-            return redirect ( checkout_stripe_session.url)
-
-        except :
-            return Response({'message':'something went wrong while creating stripe session'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            return redirect(checkout_stripe_session.url)
+        except Exception as e:
+            return Response({'message': 'Error creating Stripe session', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # webhook used to : recieve requests from public domain to my local machine 
@@ -85,43 +89,56 @@ class CreateCheckoutSessionView(APIView):
 
 @csrf_exempt
 def WebhookView(request):
-  
-  payload = request.body
-  sig_header = request.META['HTTP_STRIPE_SIGNATURE']
-  event = None
-  try:
-    event = stripe.Webhook.construct_event(payload,sig_header,settings.STRIPE_WEBHOOK_KEY)
-
-  except ValueError as e:
-      # Invalid payload
-    return HttpResponse(status=400)
-  
-  except stripe.error.SignatureVerificationError as e:
-      # Invalid signature
-    return HttpResponse(status=400)
-  
-  if event['type'] == 'checkout.session.completed':
-    session = event['data']['object']
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    if sig_header is None:
+        return HttpResponse(status=400)
     
-    # print(session) # i can get the email and mark the session is booked 
+    try:
+        event = stripe.Webhook.construct_event(payload, sig_header, settings.STRIPE_WEBHOOK_KEY)
+    except ValueError:
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError:
+        return HttpResponse(status=400)
+    
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        if session.mode == 'payment' and session.payment_status == 'paid':
+            appointment_id = session.metadata['appointment_id']
+            user_id = session.metadata['user_id']
+            
+            try:
+                user = User.objects.get(id=user_id)
+                appointment = Appointement.objects.get(id=appointment_id)
+                appointment.user = user
+                appointment.state = 'booked'
+                appointment.save()
 
-    if session.mode == 'payment' and session.payment_status == 'paid':
-      appointment_id = session.metadata['appointment_id']
-      user_id = session.metadata['user_id']
-      user = User.objects.get(id = user_id)
+                # Create notifications
+                patient_message = f"You booked an appointment at {appointment.start_at} with Dr. {appointment.doctor.user.name} successfully"
+                doctor_message = f"{user.name} has booked an appointment at {appointment.start_at} with you"
 
-      appointment = Appointement.objects.get(id = appointment_id)  
-      appointment.user= user
-      appointment.state = 'booked'
-      appointment.save()
+                Notification.objects.create(user=user, message=patient_message)
+                Notification.objects.create(user=appointment.doctor.user, message=doctor_message)
+
+            except (User.DoesNotExist, Appointement.DoesNotExist):
+                return HttpResponse(status=400)
+            return HttpResponse(status=200)
+    return HttpResponse(status=200)
+
+
+class NotificationListView(generics.ListAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user)
       
+      
+# Return a JSON response with a key "unread_notifications_exist" which will be true if there are unread notifications and false otherwise
+class UnreadNotificationCheck(APIView):
+    permission_classes = [IsAuthenticated]
 
-      return HttpResponse(status=200)
-    else :
-      return HttpResponse(status=400)
-  
-  else:
-      return HttpResponse(status=200)
-      # print('Unhandled event type {}'.format(event['type']))
-      # return HttpResponse(status=500)
-
+    def get(self, request):
+        unread_notifications_exist = Notification.objects.filter(user=request.user, is_read=False).exists()
+        return Response({"unread_notifications_exist": unread_notifications_exist}, status=status.HTTP_200_OK)
