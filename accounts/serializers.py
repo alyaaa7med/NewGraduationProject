@@ -68,7 +68,21 @@ class DoctorSerializer(serializers.ModelSerializer):
         doctor.save()
         return doctor  # why not return user ? i tried it but i get an error
     
-    
+    def update (self ,instance , validated_data):
+        user_data = validated_data.pop('user')
+        validated_data.pop('confirm_password') 
+        
+        #update user 
+        user_instance = instance.user  
+        user_serializer = UserSerializer()
+        user_serializer.update(user_instance, user_data)
+            
+        #update doctor 
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
@@ -107,6 +121,20 @@ class PatientSerializer(serializers.ModelSerializer):
         patient.save()
         return patient
     
+    def update (self ,instance , validated_data):
+        user_data = validated_data.pop('user')
+        validated_data.pop('confirm_password') 
+        
+        #update user 
+        user_instance = instance.user  
+        user_serializer = UserSerializer()
+        user_serializer.update(user_instance, user_data)
+            
+        #update patient 
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
     
     def to_representation(self, instance):
 

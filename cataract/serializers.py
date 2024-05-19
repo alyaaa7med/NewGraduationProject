@@ -9,7 +9,7 @@ class CataractDiseaseSerializer (serializers.ModelSerializer):
     
     class Meta:
         model = CataractDisease
-        fields = ['retina_image','result','percentage']
+        fields = ['id','retina_image','result','percentage']
         read_only_fields = ['result', 'percentage']  
     
 
@@ -21,9 +21,11 @@ class CataractDiseaseSerializer (serializers.ModelSerializer):
         cataract_retina = CataractDisease.objects.create(**validated_data,user=user)
         cataract_retina.save()
 
-        result , percentage = image_prediction_pipeline(cataract_retina.retina_image.path)
+        result = image_prediction_pipeline(cataract_retina.retina_image.path)
         
         cataract_retina.result = result
-        cataract_retina.percentage = percentage
+        # cataract_retina.percentage = percentage
+        cataract_retina.save()
+        
         return cataract_retina
     

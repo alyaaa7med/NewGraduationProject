@@ -8,7 +8,7 @@ Original file is located at
 """
 import numpy as np
 import cv2 as cv
-from tensorflow.keras.models import load_model
+import tensorflow as tf
 
 def load_and_preprocess_image(file_path):
     img = cv.imread(file_path,cv.IMREAD_COLOR)
@@ -29,7 +29,7 @@ def predict_with_model(model, image):
 
 def show_result(predicted_class, confidence_percentage):
     result = ['no cataract', 'cataract']
-    # print('The result is',result[predicted_class], f"Confidence level: {confidence_percentage:.2f}%")
+    print('The result is',result[predicted_class], f"Confidence level: {confidence_percentage:.2f}%")
     return result[predicted_class] , confidence_percentage
 
 def image_prediction_pipeline(input_path):
@@ -38,7 +38,7 @@ def image_prediction_pipeline(input_path):
 
     # Step 2: Load your trained TensorFlow model
     
-    model = load_model("cataract/dl_model/cataract_model.h5")
+    model = tf.keras.models.load_model("cataract/dl_model/cataract_model.h5")
                 
     # Step 3: Predict using your model
     predicted_class, confidence_percentage = predict_with_model(model, image)
