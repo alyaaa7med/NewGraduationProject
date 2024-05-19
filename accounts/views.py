@@ -1,6 +1,6 @@
 from rest_framework import viewsets  
 from .models import Doctor , Patient  ,otpcode , User  , Rating , ProfileImage
-from .serializers import DoctorSerializer,ResendNewOTPSerializer ,VerifyOTPRequestSerializer, PatientSerializer , LoginSerializer , PasswordResetRequestSerializer , SetConfirmNewPasswordSerializer , RatingSerializer , photoserializer , ProfileImageSerializer
+from .serializers import UserSerializer, DoctorSerializer,ResendNewOTPSerializer ,VerifyOTPRequestSerializer, PatientSerializer , LoginSerializer , PasswordResetRequestSerializer , SetConfirmNewPasswordSerializer , RatingSerializer , photoserializer , ProfileImageSerializer
 from rest_framework.parsers import MultiPartParser , FormParser
 from rest_framework.response import Response
 from django.utils import timezone 
@@ -16,6 +16,12 @@ from rest_framework.decorators import api_view
 
 
 
+
+
+class UserView (viewsets.ModelViewSet):
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 #  create=extend_schema(description="Create a new object", summary="Create Object"),
 

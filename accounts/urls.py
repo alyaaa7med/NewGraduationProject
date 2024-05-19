@@ -4,9 +4,10 @@ from rest_framework.routers import DefaultRouter
 from  rest_framework_nested import routers
 
 
-from .views import DoctorView , PatientView  , LoginUserView ,ResendNewOTP, PasswordResetRequestView ,VerifyOTPRequestView ,SetConfirmNewPasswordView ,doctor_rating_list, RatingViewSet ,Checkimage , ProfileImageView 
+from .views import UserView , DoctorView , PatientView  , LoginUserView ,ResendNewOTP, PasswordResetRequestView ,VerifyOTPRequestView ,SetConfirmNewPasswordView ,doctor_rating_list, RatingViewSet ,Checkimage , ProfileImageView 
 
 router = DefaultRouter()
+router.register(r'users',UserView)
 router.register(r'doctors', DoctorView)
 router.register(r'patients',PatientView)
 router.register(r'Ratings',RatingViewSet)

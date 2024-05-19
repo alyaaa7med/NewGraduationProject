@@ -25,19 +25,16 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-    def update(self, instance, validated_data):
-        password = validated_data.pop("password", None)
-        user = User(**validated_data)
-        user.set_password(password)
-        user.save()
-        return user
-
-    def delete(self, validated_data):
-        password = validated_data.pop("password", None)
-        user = User(**validated_data)
-        user.set_password(password)
-        user.delete()
-        return user
+   
+    def update(self, instance, validated_data): # instance uses the id of the model view set 
+        password =validated_data['password']
+        hashed_password = make_password(password)  
+        instance.name = validated_data['name']
+        instance.email = validated_data['email']
+        instance.password = hashed_password
+      
+        instance.save()  # Save the updated instance
+        return instance 
   
 class DoctorSerializer(serializers.ModelSerializer):
 
