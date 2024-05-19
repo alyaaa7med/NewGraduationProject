@@ -132,7 +132,8 @@ class LoginSerializer(serializers.Serializer):
     access_token=serializers.CharField(max_length=255, read_only=True)
     refresh_token=serializers.CharField(max_length=255, read_only=True)
     profile_id = serializers.IntegerField(read_only=True)
-    user_type = serializers.CharField(max_length=30,read_only=True)    
+    user_type = serializers.CharField(max_length=30,read_only=True)  
+    user_id = serializers.IntegerField(read_only=True)  
 
     def validate(self, attrs):# if i return attr it has no relation with the serializer data (read_only or write_only )
         email = attrs.get('email')
@@ -154,12 +155,14 @@ class LoginSerializer(serializers.Serializer):
                         doctor = Doctor.objects.get(user=user)
                         profileid = doctor.id
                         usertype='doctor'  # user.role
+                        userid=user.id
 
                     except Doctor.DoesNotExist:
                         try :
                             patient = Patient.objects.get(user=user)
                             profileid = patient.id
                             usertype='patient'
+                            userid=user.id
 
                         except Patient.DoesNotExist:
                             # surly it is a guest
@@ -175,6 +178,7 @@ class LoginSerializer(serializers.Serializer):
                     return  {
                     "profile_id":profileid,
                     "user_type":usertype,
+                    "user_id":userid,
                     "access_token":access_token, # str(tokens.get('access')),
                     "refresh_token":refresh_token # str(tokens.get('refresh'))
                     }

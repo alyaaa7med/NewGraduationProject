@@ -55,6 +55,18 @@ class DoctorView(viewsets.ModelViewSet):
             )
         return queryset
     
+    
+    
+    def destroy(self, request, *args, **kwargs):
+        # delete method in serializer does not work so i override the destroy
+        instance = self.get_object()
+
+        # delete the user first and the profile will be handeled automatically
+        instance.user.delete()
+
+        return Response({"message": "Profile deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
+    
 
 # @extend_schema_view(
 #     create=extend_schema(description="This Endpoint is secured with jwt token"),
@@ -68,6 +80,18 @@ class PatientView(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
     parser_classes = [MultiPartParser,FormParser]
+ 
+    def destroy(self, request, *args, **kwargs):
+        # delete method in serializer does not work so i override the destroy
+        instance = self.get_object()
+
+        # delete the user first and the profile will be handeled automatically
+        instance.user.delete()
+
+        return Response({"message": "Profile deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
+
+
 
 
 class ProfileImageView(viewsets.ModelViewSet):

@@ -42,7 +42,6 @@ class AppointmentSerializer(serializers.ModelSerializer): # it has create , upda
         if Appointement.objects.filter(day=validated_data['day'],
                                        date=validated_data['date'],
                                        start_at=validated_data['start_at'],
-                                       end_at=validated_data['end_at'],
                                        doctor = doctor) .exists() :
         
             raise serializers.ValidationError({"message":"you have an appointment at this time , enter an other one "})
@@ -52,7 +51,6 @@ class AppointmentSerializer(serializers.ModelSerializer): # it has create , upda
             instance.day = validated_data['day']
             instance.date = validated_data['date']
             instance.start_at = validated_data['start_at']
-            instance.end_at = validated_data['end_at']
             instance.price = validated_data['price']
             instance.save()  # Save the updated instance
             return instance

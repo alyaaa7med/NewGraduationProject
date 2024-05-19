@@ -14,8 +14,6 @@ class Appointement (models.Model):
     day = models.CharField(max_length=15) # ,blank = False , null = False
     date = models.DateField()
     start_at =models.TimeField()
-    end_at = models.TimeField()
-    session_length=models.DurationField(null = True)
     type = models.CharField(max_length = 10, choices = Session_CHOICES )
     price = models.DecimalField(max_digits=10, decimal_places=2, null = True) # add null for previous rows in db
     state = models.CharField(max_length = 10, choices = State_CHOICES , default = 'free' )
@@ -24,10 +22,10 @@ class Appointement (models.Model):
     user = models.ForeignKey(User , on_delete = models.SET_NULL , null =True )
 
 
-    REQUIRED_FIELDS= ["day","date","start_at","end_at","type","price","state"] 
+    REQUIRED_FIELDS= ["day","date","start_at","type","price","state"] 
     
     class Meta : 
-        unique_together = ('day', 'date','start_at','end_at','doctor') # unique session time for the same doctor 
+        unique_together = ('day', 'date','start_at','doctor') # unique session time for the same doctor 
 
 
     def __str__(self) :
