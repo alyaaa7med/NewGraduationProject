@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'payment.apps.PaymentConfig',
     'reservations.apps.ReservationsConfig',
     'chat.apps.ChatConfig',
+    'cataract.apps.CataractConfig',
 ]
 
 MIDDLEWARE = [
