@@ -38,7 +38,7 @@ class AppointementView(viewsets.ModelViewSet):
         if instance.user :
             return Response({"message":"this appoitment is booked by a patient"}, status= status.HTTP_400_BAD_REQUEST)
         
-        return Response({"message":"this appointment deleted successfully "} ,status=status.HTTP_204_NO_CONTENT)
+        return Response({"message":"Appointment deleted successfully "} ,status=status.HTTP_204_NO_CONTENT)
     
 
     def get_serializer_context(self):
@@ -110,40 +110,4 @@ class PatientAppointment (APIView) :
         
        
 
-        
     
-
-# class AppointementView(APIView):
-        
-#     def post(self, request , *args, **kwargs):
-
-#         doctor_pk = self.kwargs['doctor_pk']
-#         serializer = AppointementSerializer(data=request.data,context={'doctor_pk': doctor_pk})
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response({'data':serializer.data,
-#                              'message':'created'}, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#     def put(self, request, doctor_pk):
-#         instance = MyModel.objects.get(pk=pk)
-#         serializer = MyModelSerializer(instance, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#     def patch(self, request, pk):
-#         instance = MyModel.objects.get(pk=pk)
-#         serializer = MyModelSerializer(instance, data=request.data, partial=True)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#     def delete(self, request, pk):
-#         instance = MyModel.objects.get(pk=pk)
-#         instance.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-
-#     def get(self , request ):
