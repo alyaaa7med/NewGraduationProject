@@ -20,12 +20,22 @@ class CataractDiseaseSerializer (serializers.ModelSerializer):
         user  = User.objects.get(id=user_pk)
         cataract_retina = CataractDisease.objects.create(**validated_data,user=user)
         cataract_retina.save()
-
-        result = image_prediction_pipeline(cataract_retina.retina_image.path)
         
+        result ,percentage = image_prediction_pipeline(cataract_retina.retina_image.path) 
         cataract_retina.result = result
-        # cataract_retina.percentage = percentage
+        cataract_retina.percentage = percentage
         cataract_retina.save()
         
         return cataract_retina
+
+
+    def to_representation(self, instance):
+        
+        representation = super().to_representation(instance)
+
+        retina_image = instance.retina_image
+        representation['retina_image'] = self.context['request'].build_absolute_uri(retina_image.url)
+ 
+        return representation
+    
     

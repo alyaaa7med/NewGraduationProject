@@ -3,6 +3,7 @@ from .models import CataractDisease
 from .serializers import CataractDiseaseSerializer
 from rest_framework.parsers import MultiPartParser , FormParser
 
+from accounts.models import User
 class CataractDiseaseView(viewsets.ModelViewSet):
     queryset = CataractDisease.objects.all()
     serializer_class = CataractDiseaseSerializer
@@ -10,5 +11,12 @@ class CataractDiseaseView(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         
-        return {'user_pk': self.kwargs['user_pk']}
+        return {'request': self.request, 'user_pk': self.kwargs['user_pk']}
     
+
+    def get_queryset(self):
+            
+        user_pk = self.kwargs['user_pk']
+        user = User.objects.get(pk=user_pk) 
+
+        return CataractDisease.objects.filter(user=user)

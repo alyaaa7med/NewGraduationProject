@@ -26,11 +26,12 @@ def predict_with_model(model, image):
     return predicted_class, confidence_percentage
 
 
-
 def show_result(predicted_class, confidence_percentage):
-    result = ['no cataract', 'cataract']
-    print('The result is',result[predicted_class], f"Confidence level: {confidence_percentage:.2f}%")
-    return result[predicted_class] , confidence_percentage
+    result = ['cataract', 'no cataract']
+    # print('The result is',result[predicted_class], f"Confidence level: {confidence_percentage:.2f}%")
+    confidence_percentage = round(confidence_percentage, 2)
+    return result[predicted_class], confidence_percentage
+
 
 def image_prediction_pipeline(input_path):
     # Step 1: Load and preprocess the image
@@ -42,7 +43,7 @@ def image_prediction_pipeline(input_path):
                 
     # Step 3: Predict using your model
     predicted_class, confidence_percentage = predict_with_model(model, image)
-    show_result(predicted_class, confidence_percentage)
+    return show_result(predicted_class, confidence_percentage)
 
 
 
