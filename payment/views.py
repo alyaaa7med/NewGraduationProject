@@ -59,8 +59,8 @@ class CreateCheckoutSessionView(APIView):
                     'quantity': 1,
                 }],
                 mode='payment',
-                success_url=PublicDomain + 'payment/success/',
-                cancel_url=PublicDomain + 'payment/cancel/',
+                success_url=PublicDomain + 'payment/success',
+                cancel_url=PublicDomain + 'payment/cancel',
                 metadata={'user_id': user_id, 'appointment_id': appointment_id}
             )
             return redirect(checkout_stripe_session.url)
