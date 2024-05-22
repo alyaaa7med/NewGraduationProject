@@ -14,6 +14,7 @@ from pathlib import Path
 import os 
 import environ 
 from datetime import timedelta
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,7 +30,7 @@ SECRET_KEY =os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = ['sightsaver.onrender.com','localhost','127.0.0.1']
+ALLOWED_HOSTS = ['sightsaver.onrender.com','localhost','127.0.0.1'] # add ngrok domain 
 
 
 # Application definition
@@ -159,13 +160,21 @@ WSGI_APPLICATION = 'sightsaver.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
+if DEBUG :
+    DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
+    }
 
-}
+else :
+    DATABASES = {
+    'default': dj_database_url.parse(os.getenv("DATABASE_URL"))
+    
+    }
+
+
 
 # Email configration for deployment
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

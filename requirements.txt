@@ -60,6 +60,7 @@ pillow==10.2.0
 protobuf==4.25.3
 psycopg==3.1.18
 psycopg2==2.9.9
+psycopg2-binary==2.9.9
 pyasn1==0.6.0
 pyasn1_modules==0.4.0
 pycparser==2.21
@@ -95,3 +96,5 @@ Werkzeug==3.0.3
 whitenoise==6.6.0
 wrapt==1.14.1
 zope.interface==6.3
+dj-database-url==2.1.0
+
