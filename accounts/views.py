@@ -13,6 +13,8 @@ from drf_spectacular.utils import extend_schema_view, extend_schema
 import base64
 from rest_framework import filters
 from rest_framework.decorators import api_view
+from django.http import HttpResponse
+from django.db import connection
 
 
 
@@ -303,3 +305,11 @@ def doctor_rating_list(request, doctor_id):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+def test_db_connection(request):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            row = cursor.fetchone()
+        return HttpResponse(f"Database connection test: {row[0]}")
+    except Exception as e:
+        return HttpResponse(f"Database connection failed: {str(e)}")

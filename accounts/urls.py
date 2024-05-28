@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from  rest_framework_nested import routers
 
 
-from .views import UserView , DoctorView , PatientView  , LoginUserView ,ResendNewOTP, PasswordResetRequestView ,VerifyOTPRequestView ,SetConfirmNewPasswordView ,doctor_rating_list, RatingViewSet ,Checkimage , ProfileImageView 
+from .views import test_db_connection, UserView , DoctorView , PatientView  , LoginUserView ,ResendNewOTP, PasswordResetRequestView ,VerifyOTPRequestView ,SetConfirmNewPasswordView ,doctor_rating_list, RatingViewSet ,Checkimage , ProfileImageView 
 
 router = DefaultRouter()
 router.register(r'users',UserView)
@@ -22,6 +22,8 @@ patient_router.register(r'images', ProfileImageView, basename='patient-image')
 
 
 urlpatterns = [
+]
+urlpatterns = [
    
     # i use the same routes for both doctor , patient 
     path('login',LoginUserView.as_view()),
@@ -31,6 +33,7 @@ urlpatterns = [
     path('resend-new-otp',ResendNewOTP.as_view()),
     path('Checkimage',Checkimage.as_view()),
     path('Doctor/<int:doctor_id>/Ratings/', doctor_rating_list, name='doctor-rating-list'),
+    path('test-db/', test_db_connection),
 
 ] 
 urlpatterns += router.urls + patient_router.urls + doctor_router.urls 
