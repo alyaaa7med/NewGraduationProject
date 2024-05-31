@@ -30,7 +30,7 @@ SECRET_KEY =os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = ['sightsaver.onrender.com','localhost','127.0.0.1'] # add ngrok domain 
+ALLOWED_HOSTS = ['sightsaver.onrender.com','localhost','127.0.0.1'] # add ngrok domain : ngrok http http://localhost:8000
 
 
 # Application definition
@@ -160,7 +160,7 @@ WSGI_APPLICATION = 'sightsaver.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-if DEBUG :
+if DEBUG == 'True':
     DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
