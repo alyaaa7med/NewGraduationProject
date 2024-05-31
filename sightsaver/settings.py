@@ -160,7 +160,7 @@ WSGI_APPLICATION = 'sightsaver.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-if DEBUG == 'True':
+if (DEBUG == 'True'):
     DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
