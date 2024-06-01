@@ -1,3 +1,6 @@
+from django.shortcuts import render
+
+# Create your views here.
 from rest_framework import viewsets  
 from .models import Doctor , Patient  ,otpcode , User  , Rating , ProfileImage
 from .serializers import UserSerializer, DoctorSerializer,ResendNewOTPSerializer ,VerifyOTPRequestSerializer, PatientSerializer , LoginSerializer , PasswordResetRequestSerializer , SetConfirmNewPasswordSerializer , RatingSerializer , photoserializer , ProfileImageSerializer

@@ -1,4 +1,7 @@
 from django.db import models
+
+# Create your models here.
+from django.db import models
 from django.contrib.auth.models import AbstractBaseUser  ,PermissionsMixin 
 from django.utils.translation import gettext_lazy as _ 
 from .managers import CustomUserManger 
@@ -134,4 +137,3 @@ class ProfileImage(models.Model):
 
 class photo(models.Model):
     image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")
-
