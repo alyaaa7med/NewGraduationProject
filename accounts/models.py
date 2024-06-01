@@ -135,4 +135,3 @@ class ProfileImage(models.Model):
 class photo(models.Model):
     image = models.ImageField(upload_to="accounts/images/%Y/%m/%d/%H/%M/%S/")
 
-

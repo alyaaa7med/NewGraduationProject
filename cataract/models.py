@@ -6,4 +6,3 @@ class CataractDisease(models.Model):
     retina_image = models.ImageField(upload_to="cataract/images/%Y/%m/%d/%H/%M/%S/")
     result = models.CharField(max_length=30,null =True)
     percentage = models.DecimalField(max_digits=5, decimal_places=2, null=True)
-

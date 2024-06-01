@@ -35,4 +35,3 @@ def send_generated_otp_to_email(email):
                 fail_silently=False,
             )
   
-

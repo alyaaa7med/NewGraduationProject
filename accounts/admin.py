@@ -58,4 +58,3 @@ admin.site.register(otpcode)
 admin.site.register(Rating, RatingAdmin)
 admin.site.register(ProfileImage)
 
-
