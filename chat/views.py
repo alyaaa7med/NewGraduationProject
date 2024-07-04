@@ -56,6 +56,18 @@ class MessagesView(viewsets.ModelViewSet):
             if profile_image:
                 profile_image_url = request.build_absolute_uri(profile_image.image.url)
 
+
+            # Determine role and role ID of the related user
+            user_role = 'guest'
+            user_role_id = None
+
+            if hasattr(user, 'doctor'):
+                user_role = 'doctor'
+                user_role_id = user.doctor.id
+            elif hasattr(user, 'patient'):
+                user_role = 'patient'
+                user_role_id = user.patient.id
+            
             # Create a dictionary containing user details, last message content, sender ID, and profile image URL
             user_data = {
                 "id": user.id,
@@ -63,7 +75,9 @@ class MessagesView(viewsets.ModelViewSet):
                 "last_message": last_message.content if last_message else None,
                 "last_message_sender_id": last_message.sender.id if last_message else None,
                 "last_message_seen": last_message.seen if last_message else None,
-                "profile_image_url": profile_image_url
+                "profile_image_url": profile_image_url,
+                "user_role": user_role,
+                "user_role_id": user_role_id
             }
             result_list.append(user_data)
 
