@@ -64,7 +64,9 @@ class CreateCheckoutSessionView(APIView):
                 cancel_url=PublicDomain + 'payment/cancel',
                 metadata={'user_id': user_id, 'appointment_id': appointment_id}
             )
-            return Response({"url":checkout_stripe_session.url},status=status.HTTP_200_OK)
+            # return Response({"url":checkout_stripe_session.url},status=status.HTTP_200_OK)
+            return redirect(checkout_stripe_session.url)
+
         
         except Exception as e:
             return Response({'message': 'Error creating Stripe session', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
