@@ -60,8 +60,8 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-media/accounts/images/
-media/cataract/images/
+# media/accounts/images/
+# media/cataract/images/
 # static/
 
 
