@@ -242,8 +242,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static/')  # will be used in production to store static files 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-MEDIA_URL = 'media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+# MEDIA_URL = 'media/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
