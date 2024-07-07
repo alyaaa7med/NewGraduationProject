@@ -160,7 +160,7 @@ STATIC_URL = '/static/'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-print(DEBUG)
+print(MEDIA_ROOT)
 if (DEBUG == 'True'):
     DATABASES = {
     "default": {
