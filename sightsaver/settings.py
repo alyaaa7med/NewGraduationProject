@@ -156,6 +156,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sightsaver.wsgi.application'
 
+STATIC_URL = '/static/'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -169,6 +170,9 @@ if (DEBUG == 'True'):
     }
 
 else :
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
     DATABASES = {
     'default': dj_database_url.parse(os.getenv("DATABASE_URL"))
     
@@ -237,12 +241,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')  # will be used in production to store static files 
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')  # will be used in production to store static files 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = 'media/'
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 
