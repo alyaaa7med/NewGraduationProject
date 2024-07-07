@@ -160,7 +160,6 @@ STATIC_URL = '/static/'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-print(MEDIA_ROOT)
 if (DEBUG == 'True'):
     DATABASES = {
     "default": {
@@ -250,6 +249,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+print(MEDIA_ROOT)
 
 
 
