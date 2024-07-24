@@ -21,8 +21,7 @@ patient_router = routers.NestedSimpleRouter(router, r'patients', lookup='patient
 patient_router.register(r'images', ProfileImageView, basename='patient-image')
 
 
-urlpatterns = [
-]
+
 urlpatterns = [
    
     # i use the same routes for both doctor , patient 

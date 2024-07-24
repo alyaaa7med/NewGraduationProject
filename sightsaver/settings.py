@@ -110,8 +110,8 @@ SPECTACULAR_SETTINGS = {
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',), #'JWT'
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=350),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=350),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=50),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=50),
 
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
@@ -141,7 +141,7 @@ ROOT_URLCONF = 'sightsaver.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [], # i do not add the template url 
+        'DIRS': [], # i do not need to add the template url 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -169,6 +169,7 @@ if (DEBUG == 'True'):
     }
 
 else :
+    # postgresql database 
     DATABASES = {
     'default': dj_database_url.parse(os.getenv("DATABASE_URL"))
     
@@ -185,13 +186,13 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
-# # Email configration for development
+# # Mailtrap configration for Mail service in development phase  
+
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_HOST='sandbox.smtp.mailtrap.io'
-# EMAIL_HOST_USER='60972b6568b304'
-# EMAIL_HOST_PASSWORD='df8d09b7f05117'
+# EMAIL_HOST_USER= os.getenv('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD= os.getenv('EMAIL_HOST_PASSWORD')
 # EMAIL_PORT=2525
-# DEFAULT_FROM_EMAIL = "alyaa@backend.com"
 # DOMAIN ='localhost:8000' # domain for the front end ,but i put 8000 not 5173 
 # SITE_NAME = "Depressed Backend "  # ^_^
 # DOMAIN='localhost:8000'
