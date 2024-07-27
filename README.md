@@ -3,7 +3,7 @@ It is a ```REST API``` for a medical mobile application with an Artificial Intel
 
 # Technologies / Tools  
 - <span style="font-size:larger;">Programming Language : </span> [Python](https://www.python.org/downloads/) <br><br>
-<span >Note :  </span>The suitable python version is <span style="font-size:larger;"> 3.10.11 </span> 
+```Note``` : ```The suitable python version is 3.10.11 ``` 
 
 - <span style="font-size:larger;">Backend Framework : </span> [Django](https://www.djangoproject.com/) 
 - <span style="font-size:larger;">Relational Schmea : </span> [Drawio](https://app.diagrams.net/) 
