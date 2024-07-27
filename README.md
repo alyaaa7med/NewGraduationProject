@@ -1,5 +1,5 @@
 # SightSaver 
-It is a ```REST API``` for a medical mobile application with an Artificial Intelligence model to detect cataract disease .The application facilitates communication between the 2 types of authenticated users -patients and doctors- through online reservation , payment , chat , and the availability for rating doctors. 
+It is a ```REST API``` for a medical mobile application with an Artificial Intelligence model to detect cataract disease .The application facilitates communication between the ```2``` types of ```authenticated``` users -patients and doctors- through online ```reservation``` , ```payment``` , ```chat``` ,```notifications``` and the availability for ```rating``` doctors. 
 
 # Technologies / Tools  
 - <span style="font-size:larger;">Programming Language : </span> [Python](https://www.python.org/downloads/) <br><br>
