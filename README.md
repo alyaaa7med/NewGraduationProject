@@ -10,6 +10,10 @@ It is a ```REST API``` for a medical mobile application with an Artificial Intel
 - <span style="font-size:larger;">Testing & Documenting  : </span> Postman , Swagger
 - <span style="font-size:larger;">Live Server : </span> Render
 
+# Database Schema   
+<img src="dataschema.PNG">
+
+
 # Installation 
 <span style="font-size:larger;">Note :  </span>The suitable python version is <span style="font-size:larger;"> 3.10.11 </span> 
 
@@ -44,7 +48,7 @@ python manage.py migrate
 ```
 <span style="font-size:larger;">Notes : </span>
 - You can find the documentation for the endpoints locally on url ```localhost:[port_number]/api/docs```
-- You can find the project deployed on ```sightsaver.onrender.com```
+- You can find this API  deployed on ```sightsaver.onrender.com```
 
 # Contribution 
 Any contributions will be greatly appreciated.
