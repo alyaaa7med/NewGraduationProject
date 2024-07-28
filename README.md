@@ -1,5 +1,5 @@
 # SightSaver 
-It is a ```REST API``` for a medical mobile application with an Artificial Intelligence model to detect cataract disease .The application facilitates communication between the ```2``` types of ```authenticated``` users -patients and doctors- through online ```reservation``` , ```payment``` , ```chat``` ,```notifications``` and the availability for ```rating``` doctors. 
+It is a ```REST API``` for a medical mobile application with an ```Artificial Intelligence model``` to detect cataract disease .The application facilitates communication between the ```2``` types of ```authenticated``` users -patients and doctors- through online ```reservation``` , ```payment``` , ```chat``` ,```notifications``` and the availability for ```rating``` doctors. 
 
 # Technologies / Tools  
 - <span style="font-size:larger;">Programming Language : </span> [Python](https://www.python.org/downloads/) <br><br>
@@ -23,10 +23,27 @@ It is a ```REST API``` for a medical mobile application with an Artificial Intel
 ```
 git clone https://github.com/alyaaa7med/NewGraduationProject.git
 ```
-2- install packages :
+
+2- change your directory to the repo : 
+```
+cd NewGraduationProject
+```
+
+3- create your virtual environment : 
+```
+python -m venv [your virtual environment name]
+```
+
+4- activate it : 
+```
+[your virtual environment name]\Scripts\activate
+```
+
+5-  install packages :
 ```
 pip install -r requirements.txt 
 ```
+
 # Usage
 <span style="font-size:larger;">Note : </span>Do not forget to create your<span style="font-size:larger;"> .env </span> file inside the parent directory
 
@@ -48,6 +65,12 @@ application. This should be a large random value.
 ```
 python manage.py migrate 
 ```
+
+3- run the server :
+```
+python manage.py runserver 
+```
+
 <span style="font-size:larger;">Notes : </span>
 - You can find the documentation for the endpoints locally on url ```localhost:[port_number]/api/docs```
 - You can find this API  deployed on ```sightsaver.onrender.com```
